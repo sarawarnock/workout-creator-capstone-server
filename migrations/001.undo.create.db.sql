@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS users;
+
+DROP TABLE IF EXISTS exercises;
+
+DROP TABLE IF EXISTS workouts;
+
+DROP TABLE IF EXISTS workout_details;
