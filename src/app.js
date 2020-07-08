@@ -24,7 +24,6 @@ app.use(helmet())
 
 app.use(express.static('public'))
 
-app.use('/api/todo', todoRouter)
 app.use('/api/exercises', exercisesRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/workouts', workoutsRouter)
