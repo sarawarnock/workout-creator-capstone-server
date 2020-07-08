@@ -1,82 +1,82 @@
 const path = require('path')
 const express = require('express')
 const xss = require('xss')
-const TodoService = require('./exercises-service')
+const ExercisesService = require('./exercises-service')
 
-const todoRouter = express.Router()
+const exercisesRouter = express.Router()
 const jsonParser = express.json()
 
-const serializeTodo = todo => ({
-  id: todo.id,
-  title: xss(todo.title),
-  completed: todo.completed
+const serializeExercise = exercises => ({
+  id: exercises.id,
+  title: xss(exercises.title),
+  description: exercises.description
 })
 
-todoRouter
+exercisesRouter
   .route('/')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
-    TodoService.getTodos(knexInstance)
-      .then(todos => {
-        res.json(todos.map(serializeTodo))
+    ExercisesService.getExercises(knexInstance)
+      .then(exercises => {
+        res.json(exercises.map(serializeExercise))
       })
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { title, completed = false } = req.body
-    const newTodo = { title }
+    const { title, description } = req.body
+    const newExercise = { title, description }
 
-    for (const [key, value] of Object.entries(newTodo))
+    for (const [key, value] of Object.entries(newExercise))
       if (value == null)
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         })
 
-    newTodo.completed = completed;  
+    newExercise.description = description;  
 
-    TodoService.insertTodo(
+    ExercisesService.insertExercise(
       req.app.get('db'),
-      newTodo
+      newExercise
     )
-      .then(todo => {
+      .then(exercise => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${todo.id}`))
-          .json(serializeTodo(todo))
+          .location(path.posix.join(req.originalUrl, `/${exercise.id}`))
+          .json(serializeTodo(exercise))
       })
       .catch(next)
   })
 
-todoRouter
-  .route('/:todo_id')
+exercisesRouter
+  .route('/:exercise_id')
   .all((req, res, next) => {
-    if(isNaN(parseInt(req.params.todo_id))) {
+    if(isNaN(parseInt(req.params.exercise_id))) {
       return res.status(404).json({
         error: { message: `Invalid id` }
       })
     }
-    TodoService.getTodoById(
+    ExercisesService.getExerciseById(
       req.app.get('db'),
-      req.params.todo_id
+      req.params.exercise_id
     )
-      .then(todo => {
-        if (!todo) {
+      .then(exercise => {
+        if (!exercise) {
           return res.status(404).json({
-            error: { message: `Todo doesn't exist` }
+            error: { message: `Exercise doesn't exist` }
           })
         }
-        res.todo = todo
+        res.exercise = exercise
         next()
       })
       .catch(next)
   })
   .get((req, res, next) => {
-    res.json(serializeTodo(res.todo))
+    res.json(serializeExercise(res.exercise))
   })
   .delete((req, res, next) => {
-    TodoService.deleteTodo(
+    ExercisesService.deleteExercise(
       req.app.get('db'),
-      req.params.todo_id
+      req.params.exercise_id
     )
       .then(numRowsAffected => {
         res.status(204).end()
@@ -84,26 +84,26 @@ todoRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title, completed } = req.body
-    const todoToUpdate = { title, completed }
+    const { title, description } = req.body
+    const exerciseToUpdate = { title, description }
 
-    const numberOfValues = Object.values(todoToUpdate).filter(Boolean).length
+    const numberOfValues = Object.values(exerciseToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
-          message: `Request body must content either 'title' or 'completed'`
+          message: `Request body must content either 'title' or 'description'`
         }
       })
 
-    TodoService.updateTodo(
+    ExercisesService.updateExercise(
       req.app.get('db'),
-      req.params.todo_id,
-      todoToUpdate
+      req.params.exercise_id,
+      exerciseToUpdate
     )
-      .then(updatedTodo => {
-        res.status(200).json(serializeTodo(updatedTodo[0]))
+      .then(updatedExercise => {
+        res.status(200).json(serializeTodo(updatedExercise[0]))
       })
       .catch(next)
   })
 
-module.exports = todoRouter
+module.exports = exercisesRouter

@@ -1,45 +1,53 @@
-const TodoService = {
-    getTodos(db) {
+const ExercisesService = {
+    getExercises(db) {
       return db
-        .from('todo')
+        .from('exercises')
         .select(
-          'todo.id',
-          'todo.title',
-          'todo.completed',
+          'exercises.id',
+          'exercises.title',
+          'exercises.description',
+        //   'exercises.is_arms',
+        //   'exercises.is_legs',
+        //   'exercises.is_chest',
+        //   'exercises.is_back',
+        //   'exercises.is_core',
+        //   'exercises.is_cardio',
+        //   'exercises.is_advanced'
         )
     },
-    getTodoById(db, todo_id) {
+    getExerciseById(db, exercises_id) {
       return db
-        .from('todo')
+        .from('exercises')
         .select(
-          'todo.id',
-          'todo.title',
-          'todo.completed',
+          'exercises.id',
+          'exercises.title',
+          'exercises.description',
         )
-        .where('todo.id', todo_id)
+        .where('exercises.id', exercises_id)
         .first()
     },
-    insertTodo(db, newTodo) {
+    //do I need an insert here? No one is going to be inserting exercises except for me
+    insertExercise(db, newExercise) {
       return db
-        .insert(newTodo)
-        .into('todo')
+        .insert(newExercise)
+        .into('exercises')
         .returning('*')
         .then(rows => {
           return rows[0]
         })
     },
-    deleteTodo(db, todo_id) {
-      return db('todo')
-        .where({'id': todo_id})
+    deleteExercise(db, exercises_id) {
+      return db('exercises')
+        .where({'id': exercises_id})
         .delete()
     },
-    updateTodo(db, todo_id, newTodo) {
-      return db('todo')
-        .where({id: todo_id})
-        .update(newTodo, returning=true)
+    updateExercise(db, exercises_id, newExercise) {
+      return db('exercises')
+        .where({id: exercises_id})
+        .update(newExercise, returning=true)
         .returning('*')
     }
   
   }
   
-  module.exports = TodoService
+  module.exports = ExercisesService
