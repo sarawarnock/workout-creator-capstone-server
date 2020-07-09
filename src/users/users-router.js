@@ -24,6 +24,7 @@ usersRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
+    console.log(req.body);
     const { email, password, first_name } = req.body
     const newUser = { email, password, first_name }
 
@@ -33,7 +34,9 @@ usersRouter
           error: { message: `Missing '${key}' in request body` }
         })
 
-    //newUser.email = email;  
+    newUser.email = email;  
+    newUser.password = password;
+    newUser.first_name = first_name;
 
     UsersService.insertUser(
       req.app.get('db'),

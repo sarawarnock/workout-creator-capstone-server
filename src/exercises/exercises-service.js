@@ -6,13 +6,13 @@ const ExercisesService = {
           'exercises.id',
           'exercises.title',
           'exercises.description',
-        //   'exercises.is_arms',
-        //   'exercises.is_legs',
-        //   'exercises.is_chest',
-        //   'exercises.is_back',
-        //   'exercises.is_core',
-        //   'exercises.is_cardio',
-        //   'exercises.is_advanced'
+          'exercises.is_arms',
+          'exercises.is_legs',
+          'exercises.is_chest',
+          'exercises.is_back',
+          'exercises.is_core',
+          'exercises.is_cardio',
+          'exercises.is_advanced'
         )
     },
     getExerciseById(db, exercises_id) {
