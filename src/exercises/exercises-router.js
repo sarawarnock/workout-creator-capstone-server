@@ -42,7 +42,7 @@ exercisesRouter
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${exercise.id}`))
-          .json(serializeTodo(exercise))
+          .json(serializeExercise(exercise))
       })
       .catch(next)
   })
@@ -101,7 +101,7 @@ exercisesRouter
       exerciseToUpdate
     )
       .then(updatedExercise => {
-        res.status(200).json(serializeTodo(updatedExercise[0]))
+        res.status(200).json(serializeExercise(updatedExercise[0]))
       })
       .catch(next)
   })

@@ -18,7 +18,7 @@ const WorkoutsService = {
           'workouts.workouts_name',
           'workouts.total_length',
         )
-        .where('todo.id', workout_id)
+        .where('workouts.id', workout_id)
         .first()
     },
     insertWorkout(db, newWorkout) {

@@ -1,45 +1,47 @@
-const TodoService = {
-    getTodos(db) {
+const WorkoutDetailsService = {
+    getWorkoutDetails(db) {
       return db
-        .from('todo')
+        .from('workout_details')
         .select(
-          'todo.id',
-          'todo.title',
-          'todo.completed',
+          'workout_details.id',
+          'workout_details.workouts_id',
+          'workout_details.exercises_id',
+          'workout_details.exercise_reps'
         )
     },
-    getTodoById(db, todo_id) {
+    getWorkoutDetailsById(db, workoutdetails_id) {
       return db
-        .from('todo')
+        .from('workout_details')
         .select(
-          'todo.id',
-          'todo.title',
-          'todo.completed',
+          'workout_details.id',
+          'workout_details.workouts_id',
+          'workout_details.exercises_id',
+          'workout_details.exercise_reps'
         )
-        .where('todo.id', todo_id)
+        .where('workout_details.id', workoutdetails_id)
         .first()
     },
-    insertTodo(db, newTodo) {
+    insertWorkoutDetails(db, newWorkoutDetails) {
       return db
-        .insert(newTodo)
-        .into('todo')
+        .insert(newWorkoutDetails)
+        .into('workout_details')
         .returning('*')
         .then(rows => {
           return rows[0]
         })
     },
-    deleteTodo(db, todo_id) {
-      return db('todo')
-        .where({'id': todo_id})
+    deleteWorkoutDetails(db, workoutdetails_id) {
+      return db('workout_details')
+        .where({'id': workoutdetails_id})
         .delete()
     },
-    updateTodo(db, todo_id, newTodo) {
-      return db('todo')
-        .where({id: todo_id})
-        .update(newTodo, returning=true)
+    updateWorkoutDetails(db, workoutdetails_id, newWorkoutDetails) {
+      return db('workout_details')
+        .where({id: workoutdetails_id})
+        .update(newWorkoutDetails, returning=true)
         .returning('*')
     }
   
   }
   
-  module.exports = TodoService
+  module.exports = WorkoutDetailsService

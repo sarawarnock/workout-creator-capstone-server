@@ -6,10 +6,11 @@ const WorkoutDetailsService = require('./workout-details-service')
 const workoutDetailsRouter = express.Router()
 const jsonParser = express.json()
 
-const serializeWorkoutDetails = workoutDetails => ({
-  id: workoutDetails.id,
-  title: xss(workoutDetails.title),
-  completed: workoutDetails.completed
+const serializeWorkoutDetails = workout_details => ({
+  id: workout_details.id,
+  workouts_id: xss(workout_details.workouts_id),
+  exercises_id: workout_details.exercises_id,
+  exercise_reps: workout_details.exercise_reps
 })
 
 workoutDetailsRouter
@@ -23,8 +24,8 @@ workoutDetailsRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { user_id, workouts_name, total_length } = req.body
-    const newWorkoutDetails = { user_id, workouts_name, total_length }
+    const { workouts_id, exercises_id, exercise_reps } = req.body
+    const newWorkoutDetails = { workouts_id, exercises_id, exercise_reps }
 
     for (const [key, value] of Object.entries(newWorkoutDetails))
       if (value == null)
@@ -32,7 +33,7 @@ workoutDetailsRouter
           error: { message: `Missing '${key}' in request body` }
         })
 
-    newWorkoutDetails.workouts_name = name;  
+    //newWorkoutDetails.workouts_name = name;  
 
     WorkoutDetailsService.insertWorkoutDetails(
       req.app.get('db'),
@@ -42,22 +43,22 @@ workoutDetailsRouter
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${workoutDetails.id}`))
-          .json(serializeTodo(workoutDetails))
+          .json(serializeWorkoutDetails(workoutDetails))
       })
       .catch(next)
   })
 
 workoutDetailsRouter
-  .route('/:workoutDetails_id')
+  .route('/:workoutdetails_id')
   .all((req, res, next) => {
-    if(isNaN(parseInt(req.params.workoutDetails_id))) {
+    if(isNaN(parseInt(req.params.workoutdetails_id))) {
       return res.status(404).json({
         error: { message: `Invalid id` }
       })
     }
-    TodoService.getWorkoutDetailsById(
+    WorkoutDetailsService.getWorkoutDetailsById(
       req.app.get('db'),
-      req.params.workoutDetails_id
+      req.params.workoutdetails_id
     )
       .then(workoutDetails => {
         if (!workoutDetails) {
@@ -76,7 +77,7 @@ workoutDetailsRouter
   .delete((req, res, next) => {
     WorkoutDetailsService.deleteWorkoutDetails(
       req.app.get('db'),
-      req.params.workoutDetails_id
+      req.params.workoutdetails_id
     )
       .then(numRowsAffected => {
         res.status(204).end()
@@ -84,26 +85,26 @@ workoutDetailsRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { user_id, workouts_name, total_length } = req.body
-    const workoutDetailsToUpdate = { user_id, workouts_name, total_length }
+    const { workouts_id, exercises_id, exercise_reps } = req.body
+    const workoutDetailsToUpdate = { workouts_id, exercises_id, exercise_reps }
 
     const numberOfValues = Object.values(workoutDetailsToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
-          message: `Request body must content either 'user_id', 'workouts_name' or 'total_length'`
+          message: `Request body must content either 'workouts_id', 'exercises_id' or 'exercise_reps'`
         }
       })
 
     WorkoutDetailsService.updateWorkoutDetails(
       req.app.get('db'),
-      req.params.workoutDetails_id,
+      req.params.workoutdetails_id,
       workoutDetailsToUpdate
     )
       .then(updatedWorkoutDetails => {
-        res.status(200).json(serializeTodo(updatedWorkoutDetails[0]))
+        res.status(200).json(serializeWorkoutDetails(updatedWorkoutDetails[0]))
       })
       .catch(next)
   })
 
-module.exports = WorkoutDetailsService
+module.exports = workoutDetailsRouter

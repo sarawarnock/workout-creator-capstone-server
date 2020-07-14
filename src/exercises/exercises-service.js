@@ -2,18 +2,7 @@ const ExercisesService = {
     getExercises(db) {
       return db
         .from('exercises')
-        .select(
-          'exercises.id',
-          'exercises.title',
-          'exercises.description',
-          'exercises.is_arms',
-          'exercises.is_legs',
-          'exercises.is_chest',
-          'exercises.is_back',
-          'exercises.is_core',
-          'exercises.is_cardio',
-          'exercises.is_advanced'
-        )
+        .select('*')
     },
     getExerciseById(db, exercises_id) {
       return db
@@ -22,6 +11,7 @@ const ExercisesService = {
           'exercises.id',
           'exercises.title',
           'exercises.description',
+          'exercises.is_arms',
         )
         .where('exercises.id', exercises_id)
         .first()
