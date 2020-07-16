@@ -42,10 +42,43 @@ workoutsRouter
             .then(exercises => {
                 // console.log('/////////', exercises, id)
                 // res.json(exercises.map(serializeExercise))
+
+                //if category is selected by user AND ==0 then .splice()
                 exercises.map((exercise, id) => {
                     console.log('map function', exercise, id+1)
+                    if (req.body.includes(is_advanced) && is_advanced == 0) {
+                        exercise.splice()
+                    }
+                    if (req.body.includes(is_arms) && is_arms == 0) {
+                        exercise.splice()
+                    }
+                    if (req.body.includes(is_back) && is_back == 0) {
+                        exercise.splice()
+                    }
+                    if (req.body.includes(is_cardio) && is_cardio == 0) {
+                        exercise.splice()
+                    }
+                    if (req.body.includes(is_chest) && is_chest == 0) {
+                        exercise.splice()
+                    }
+                    if (req.body.includes(is_core) && is_core == 0) {
+                        exercise.splice()
+                    }
+                    if (req.body.includes(is_legs) && is_legs == 0) {
+                        exercise.splice()
+                    }
                 })
             })
+            // .then(workout => {
+            //     res
+            //         .status(201)
+            //         .location(path.posix.join(req.originalUrl, `/${workout.id}`))
+            //         .json({
+            //             id: workouts.id,
+            //             name: workouts.workouts_name,
+
+            //         })
+            //})
             .catch(next)
 
 

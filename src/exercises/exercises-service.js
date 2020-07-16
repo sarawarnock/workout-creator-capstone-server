@@ -7,12 +7,7 @@ const ExercisesService = {
     getExerciseById(db, exercises_id) {
       return db
         .from('exercises')
-        .select(
-          'exercises.id',
-          'exercises.title',
-          'exercises.description',
-          'exercises.is_arms',
-        )
+        .select('*')
         .where('exercises.id', exercises_id)
         .first()
     },
