@@ -48,7 +48,7 @@ workoutsRouter
         const knexInstance = req.app.get('db')
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
-                // console.log('/////////', exercises, id)
+                 console.log('/////////', exercises)
                 // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
@@ -56,7 +56,6 @@ workoutsRouter
                     // console.log('loop function', exercises[i], i+1)
                     
                     if ((is_advanced == "on") && (exercises[i].is_advanced == 1)) {
-                        console.log(is_advanced)
                         selectedExercises.push(exercises[i])
                     }
                     else if ((is_arms == "on") && (exercises[i].is_arms == 1)) {
@@ -78,34 +77,96 @@ workoutsRouter
                         selectedExercises.push(exercises[i])
                     }
                 }
-                console.log('**********', selectedExercises)
+                //console.log('**********', selectedExercises)
                 //Create randomization logic 
-                return selectedExercises
+                // let workoutExercises = selectedExercises[Math.floor(Math.random()*selectedExercises.length)];
+
+                function shuffle(array) {
+                    var currentIndex = array.length, temporaryValue, randomIndex;
+                  
+                    // While there remain elements to shuffle...
+                    while (0 !== currentIndex) {
+                  
+                      // Pick a remaining element...
+                      randomIndex = Math.floor(Math.random() * currentIndex);
+                      currentIndex -= 1;
+                  
+                      // And swap it with the current element.
+                      temporaryValue = array[currentIndex];
+                      array[currentIndex] = array[randomIndex];
+                      array[randomIndex] = temporaryValue;
+                    }
+                  
+                    return array;
+                }
+
+                let outputExercises = []
+                let numberExercisesAvailable = selectedExercises.length
+                let numberExercisesToSelect = 1
+                let shuffledSelectedExercises = shuffle(selectedExercises)
+
+                if((total_length == "Less than 5 minutes") && (workout_type == "EMOM")) {
+                    outputExercises = shuffledSelectedExercises[0]
+                }
+
+                if((total_length == "Less than 5 minutes") && (workout_type == "AMRAP")) {
+                    //check if the maximum number of exercises available is matching the current number of exercises necessary
+                    if (numberExercisesAvailable < 2) {
+                        numberExercisesToSelect = numberExercisesAvailable
+                    } else {
+                        numberExercisesToSelect = 2
+                    }
+                    //add to the output exercises each one of the selected exercises which were already shuffled
+                    for (let i = 0; i < numberExercisesToSelect; i++) {
+                        outputExercises.push(shuffledSelectedExercises[i]) 
+                    }
+                }
+
+                if ((total_length == "6-10 minutes") && (workout_type == "AMRAP" || "EMOM")) {
+                    //check if the maximum number of exercises available is matching the current number of exercises necessary
+                    if (numberExercisesAvailable < 2) {
+                        numberExercisesToSelect = numberExercisesAvailable
+                    } else {
+                        numberExercisesToSelect = 2
+                    }
+                    //add to the output exercises each one of the selected exercises which were already shuffled
+                    for (let i = 0; i < numberExercisesToSelect; i++) {
+                        outputExercises.push(shuffledSelectedExercises[i]) 
+                    }
+                }
+
+                return outputExercises
             })
-            // .then(workout => {
-            //     res
-            //         .status(201)
-            //         .location(path.posix.join(req.originalUrl, `/${workout.id}`))
-            //         .json({
-            //             id: workouts.id,
-            //             name: workouts.workouts_name,
+            //After workout POSTed return the list of exercises that were filtered, selected, and randomized
+            .then(outputExercises => {
+                //Insert a new workout in the 'workouts' table 
+                // WorkoutsService.insertWorkout(
+                //     req.app.get('db'),
+                //     newWorkout
+                // )
+                //     .then(workout => {
+                    //For each one of the outputExercises, add them into the 'workout_details' table using the workout_id from above
+                    // let insertOuputExercises = outputExercises.map(outputExercise => {
+                        // ExercisesService.insertExercise(
+                        //     req.app.get('db'),
+                        //     outputExercise, workout.id
+                        // )
+                    // }) 
+                //         res
+                //             .status(201)
+                //             .location(path.posix.join(req.originalUrl, `/${workout.id}`))
+                //             .json(serializeWorkout(workout))
+                //     })
+                //     .catch(next)
 
-            //         })
-            //})
+
+                
+                res
+                    .status(201)
+                    //.location(path.posix.join(req.originalUrl, `/${workout.id}`))
+                    .json({outputExercises})
+            })
             .catch(next)
-
-
-        // WorkoutsService.insertWorkout(
-        //     req.app.get('db'),
-        //     newWorkout
-        // )
-        //     .then(workout => {
-        //         res
-        //             .status(201)
-        //             .location(path.posix.join(req.originalUrl, `/${workout.id}`))
-        //             .json(serializeWorkout(workout))
-        //     })
-        //     .catch(next)
     })
 
 workoutsRouter
