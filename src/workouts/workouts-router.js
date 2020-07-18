@@ -3,6 +3,7 @@ const express = require('express')
 const xss = require('xss')
 const WorkoutsService = require('./workouts-service')
 const ExercisesService = require('../exercises/exercises-service')
+const WorkoutDetailsService = require('../workout-details/workout-details-service')
 
 const workoutsRouter = express.Router()
 const jsonParser = express.json()
@@ -25,7 +26,7 @@ workoutsRouter
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-        const {
+        let {
             is_advanced,
             is_arms,
             is_back,
@@ -36,19 +37,17 @@ workoutsRouter
             total_length,
             workout_type
         } = req.body
-        // //console.log('***********',is_advanced,
-        //     is_arms,
-        //     is_back,
-        //     is_cardio,
-        //     is_chest,
-        //     is_core,
-        //     is_legs,
-        //     total_length,
-        //     workout_type)
+        total_length = parseInt(total_length)
+        let newWorkout = {
+            user_id: "1",
+            workouts_name: "Test Workout",
+	        total_length,
+	        workout_type
+        }
         const knexInstance = req.app.get('db')
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
-                 console.log('/////////', exercises)
+                // console.log('/////////', exercises)
                 // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
@@ -105,11 +104,13 @@ workoutsRouter
                 let numberExercisesToSelect = 1
                 let shuffledSelectedExercises = shuffle(selectedExercises)
 
-                if((total_length == "Less than 5 minutes") && (workout_type == "EMOM")) {
-                    outputExercises = shuffledSelectedExercises[0]
+                //console.log(shuffledSelectedExercises)
+                console.log(total_length, workout_type)
+                if((total_length == "5") && (workout_type == "EMOM")) {
+                    outputExercises.push(shuffledSelectedExercises[0])
                 }
 
-                if((total_length == "Less than 5 minutes") && (workout_type == "AMRAP")) {
+                if((total_length == "5") && (workout_type == "AMRAP")) {
                     //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
@@ -122,7 +123,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == "6-10 minutes") && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "10") && (workout_type == "AMRAP" || "EMOM")) {
                     //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
@@ -135,29 +136,88 @@ workoutsRouter
                     }
                 }
 
+                if ((total_length == "15") && (workout_type == "AMRAP" || "EMOM")) {
+                    //check if the maximum number of exercises available is matching the current number of exercises necessary
+                    if (numberExercisesAvailable < 3) {
+                        numberExercisesToSelect = numberExercisesAvailable
+                    } else {
+                        numberExercisesToSelect = 3
+                    }
+                    //add to the output exercises each one of the selected exercises which were already shuffled
+                    for (let i = 0; i < numberExercisesToSelect; i++) {
+                        outputExercises.push(shuffledSelectedExercises[i]) 
+                    }
+                }
+
+                if ((total_length == "20") && (workout_type == "AMRAP" || "EMOM")) {
+                    //check if the maximum number of exercises available is matching the current number of exercises necessary
+                    if (numberExercisesAvailable < 4) {
+                        numberExercisesToSelect = numberExercisesAvailable
+                    } else {
+                        numberExercisesToSelect = 4
+                    }
+                    //add to the output exercises each one of the selected exercises which were already shuffled
+                    for (let i = 0; i < numberExercisesToSelect; i++) {
+                        outputExercises.push(shuffledSelectedExercises[i]) 
+                    }
+                }
+
+                if ((total_length == "25") && (workout_type == "AMRAP" || "EMOM")) {
+                    //check if the maximum number of exercises available is matching the current number of exercises necessary
+                    if (numberExercisesAvailable < 5) {
+                        numberExercisesToSelect = numberExercisesAvailable
+                    } else {
+                        numberExercisesToSelect = 5
+                    }
+                    //add to the output exercises each one of the selected exercises which were already shuffled
+                    for (let i = 0; i < numberExercisesToSelect; i++) {
+                        outputExercises.push(shuffledSelectedExercises[i]) 
+                    }
+                }
+
+                if ((total_length == "30") && (workout_type == "AMRAP" || "EMOM")) {
+                    //check if the maximum number of exercises available is matching the current number of exercises necessary
+                    if (numberExercisesAvailable < 6) {
+                        numberExercisesToSelect = numberExercisesAvailable
+                    } else {
+                        numberExercisesToSelect = 6
+                    }
+                    //add to the output exercises each one of the selected exercises which were already shuffled
+                    for (let i = 0; i < numberExercisesToSelect; i++) {
+                        outputExercises.push(shuffledSelectedExercises[i]) 
+                    }
+                }
+                
                 return outputExercises
             })
             //After workout POSTed return the list of exercises that were filtered, selected, and randomized
             .then(outputExercises => {
-                //Insert a new workout in the 'workouts' table 
-                // WorkoutsService.insertWorkout(
-                //     req.app.get('db'),
-                //     newWorkout
-                // )
-                //     .then(workout => {
-                    //For each one of the outputExercises, add them into the 'workout_details' table using the workout_id from above
-                    // let insertOuputExercises = outputExercises.map(outputExercise => {
-                        // ExercisesService.insertExercise(
-                        //     req.app.get('db'),
-                        //     outputExercise, workout.id
-                        // )
-                    // }) 
-                //         res
-                //             .status(201)
-                //             .location(path.posix.join(req.originalUrl, `/${workout.id}`))
-                //             .json(serializeWorkout(workout))
-                //     })
-                //     .catch(next)
+                console.log(outputExercises)
+                // Insert a new workout in the 'workouts' table 
+                WorkoutsService.insertWorkout(
+                    req.app.get('db'),
+                    newWorkout
+                )
+                    .then(workout => {
+                    // For each one of the outputExercises, add them into the 'workout_details' table using the workout_id from above
+                    let insertOutputExercises = outputExercises.map(outputExercise => {
+                        let workoutDetailsPayload = {
+                            workouts_id: workout.id,
+	                        exercises_id: outputExercise.id,
+	                        exercise_reps: 1
+                        }
+                        console.log(workoutDetailsPayload)
+                        return WorkoutDetailsService.insertWorkoutDetails(
+                            req.app.get('db'),
+                            workoutDetailsPayload
+                        )
+                    }) 
+                        // res
+                        //     .status(201)
+                        //     // .location(path.posix.join(req.originalUrl, `/${workout.id}`))
+                        //     .json(serializeWorkout(workout))
+                    })
+                    .catch(next)
 
 
                 
