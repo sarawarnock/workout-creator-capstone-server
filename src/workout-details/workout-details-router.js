@@ -72,7 +72,7 @@ workoutDetailsRouter
       .catch(next)
   })
   .get((req, res, next) => {
-    res.json(serializeWorkoutDetails(res.workoutDetails))
+    res.json(res.workoutDetails)
   })
   .delete((req, res, next) => {
     WorkoutDetailsService.deleteWorkoutDetails(

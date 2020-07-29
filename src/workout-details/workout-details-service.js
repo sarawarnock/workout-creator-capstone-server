@@ -2,24 +2,13 @@ const WorkoutDetailsService = {
     getWorkoutDetails(db) {
       return db
         .from('workout_details')
-        .select(
-          'workout_details.id',
-          'workout_details.workouts_id',
-          'workout_details.exercises_id',
-          'workout_details.exercise_reps'
-        )
+        .select('*')
     },
     getWorkoutDetailsById(db, workoutdetails_id) {
       return db
         .from('workout_details')
-        .select(
-          'workout_details.id',
-          'workout_details.workouts_id',
-          'workout_details.exercises_id',
-          'workout_details.exercise_reps'
-        )
-        .where('workout_details.id', workoutdetails_id)
-        .first()
+        .select('*')
+        .where('workouts_id', workoutdetails_id)
     },
     insertWorkoutDetails(db, newWorkoutDetails) {
       return db

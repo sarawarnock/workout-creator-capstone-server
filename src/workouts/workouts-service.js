@@ -2,12 +2,7 @@ const WorkoutsService = {
     getWorkouts(db) {
       return db
         .from('workouts')
-        .select(
-          'workouts.id',
-          'workouts.user_id',
-          'workouts.workouts_name',
-          'workouts.total_length',
-        )
+        .select('*')
     },
     getWorkoutById(db, workout_id) {
       return db
@@ -17,9 +12,16 @@ const WorkoutsService = {
           'workouts.user_id',
           'workouts.workouts_name',
           'workouts.total_length',
+          'workouts.workout_type'
         )
         .where('workouts.id', workout_id)
         .first()
+    },
+    getWorkoutByUserId(db, user_id) {
+      return db
+        .from('workouts')
+        .select('*')
+        .where('workouts.user_id', user_id)
     },
     insertWorkout(db, newWorkout) {
       return db

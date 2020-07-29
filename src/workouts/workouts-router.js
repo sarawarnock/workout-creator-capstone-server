@@ -35,14 +35,18 @@ workoutsRouter
             is_core,
             is_legs,
             total_length,
-            workout_type
+            workout_type,
+            workouts_name
         } = req.body
+
         total_length = parseInt(total_length)
+
         let newWorkout = {
             user_id: "1",
-            workouts_name: "Test Workout",
+            //workouts_name: "Test Workout",
 	        total_length,
-	        workout_type
+            workout_type,
+            workouts_name
         }
         const knexInstance = req.app.get('db')
         ExercisesService.getExercises(knexInstance)
@@ -54,9 +58,18 @@ workoutsRouter
                 for (let i=0; i<exercises.length; i++) {
                     // console.log('loop function', exercises[i], i+1)
                     
-                    if ((is_advanced == "on") && (exercises[i].is_advanced == 1)) {
+                    // if ((is_advanced == "") && (exercises[i].is_advanced == 1)) {
+                    //     exercises[i].splice
+                    // }
+                    if ((is_advanced == "on") && (exercises[i].is_advanced == 1) && (exercises[i].is_arms == 1)) {
                         selectedExercises.push(exercises[i])
                     }
+                    else if ((is_advanced == "on") && (exercises[i].is_advanced == 1) && (exercises[i].is_legs == 1)) {
+                        selectedExercises.push(exercises[i])
+                    }
+                    // else if ((is_advanced == "on") && (exercises[i].is_advanced == 1)) {
+                    //     selectedExercises.push(exercises[i])
+                    // }
                     else if ((is_arms == "on") && (exercises[i].is_arms == 1)) {
                         selectedExercises.push(exercises[i])
                     }
@@ -106,6 +119,7 @@ workoutsRouter
 
                 //console.log(shuffledSelectedExercises)
                 console.log(total_length, workout_type)
+
                 if((total_length == "5") && (workout_type == "EMOM")) {
                     outputExercises.push(shuffledSelectedExercises[0])
                 }
@@ -199,12 +213,74 @@ workoutsRouter
                     newWorkout
                 )
                     .then(workout => {
+                    // Randomize the exercise reps based on the workout_type and workout_length
+                    function getRandomArbitrary(min, max) {
+                        min = Math.ceil(min);
+                        max = Math.floor(max);
+                        return Math.floor(Math.random() * (max - min)) + min;
+                    }
+                    // let exercise_reps = 1
+                    // if ((workout_type == "EMOM") && (total_length == "5")) {
+                    //     exercise_reps = 10
+                    // }
+                    // else if ((workout_type == "AMRAP") && (total_length == "5")) {
+                    //     exercise_reps = getRandomArbitrary(5, 10)
+                    // }
+                    // else if ((workout_type == "EMOM") && (total_length == "10")) {
+                    //     exercise_reps = getRandomArbitrary(8, 12)
+                    // }
+                    // else if ((workout_type == "AMRAP") && (total_length == "10")) {
+                    //     exercise_reps = getRandomArbitrary(5, 10)
+                    // }
+                    // else if ((workout_type == "AMRAP") && (total_length == "30")) {
+                    //     exercise_reps = getRandomArbitrary(7, 19)
+                    // }
+                    // return exercise_reps
                     // For each one of the outputExercises, add them into the 'workout_details' table using the workout_id from above
                     let insertOutputExercises = outputExercises.map(outputExercise => {
+
+                    let exercise_reps = 1
+                    if ((workout_type == "EMOM") && (total_length == "5")) {
+                        exercise_reps = 8
+                    }
+                    else if ((workout_type == "AMRAP") && (total_length == "5")) {
+                        exercise_reps = getRandomArbitrary(5, 10)
+                    }
+                    else if ((workout_type == "EMOM") && (total_length == "10")) {
+                        exercise_reps = getRandomArbitrary(5, 10)
+                    }
+                    else if ((workout_type == "AMRAP") && (total_length == "10")) {
+                        exercise_reps = getRandomArbitrary(5, 20)
+                    }
+                    else if ((workout_type == "EMOM") && (total_length == "15")) {
+                        exercise_reps = getRandomArbitrary(5, 10)
+                    }
+                    else if ((workout_type == "AMRAP") && (total_length == "15")) {
+                        exercise_reps = getRandomArbitrary(10, 25)
+                    }
+                    else if ((workout_type == "EMOM") && (total_length == "20")) {
+                        exercise_reps = getRandomArbitrary(5, 15)
+                    }
+                    else if ((workout_type == "AMRAP") && (total_length == "20")) {
+                        exercise_reps = getRandomArbitrary(5, 20)
+                    }
+                    else if ((workout_type == "EMOM") && (total_length == "25")) {
+                        exercise_reps = getRandomArbitrary(5, 15)
+                    }
+                    else if ((workout_type == "AMRAP") && (total_length == "25")) {
+                        exercise_reps = getRandomArbitrary(10, 25)
+                    }
+                    else if ((workout_type == "EMOM") && (total_length == "30")) {
+                        exercise_reps = getRandomArbitrary(5, 15)
+                    }
+                    else if ((workout_type == "AMRAP") && (total_length == "30")) {
+                        exercise_reps = getRandomArbitrary(10, 30)
+                    }
+
                         let workoutDetailsPayload = {
                             workouts_id: workout.id,
 	                        exercises_id: outputExercise.id,
-	                        exercise_reps: 1
+	                        exercise_reps
                         }
                         console.log(workoutDetailsPayload)
                         return WorkoutDetailsService.insertWorkoutDetails(
@@ -284,6 +360,43 @@ workoutsRouter
         )
             .then(updatedWorkout => {
                 res.status(200).json(serializeWorkout(updatedWorkout[0]))
+            })
+            .catch(next)
+    })
+
+workoutsRouter
+    .route('/user/:user_id')
+    .all((req, res, next) => {
+        if (isNaN(parseInt(req.params.user_id))) {
+            return res.status(404).json({
+                error: { message: `Invalid id` }
+            })
+        }
+        WorkoutsService.getWorkoutByUserId(
+            req.app.get('db'),
+            req.params.user_id
+        )
+            .then(workout => {
+                if (!workout) {
+                    return res.status(404).json({
+                        error: { message: `Workout doesn't exist` }
+                    })
+                }
+                res.workout = workout
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.json(res.workout)
+    })
+    .delete((req, res, next) => {
+        WorkoutsService.deleteWorkout(
+            req.app.get('db'),
+            req.params.user_id
+        )
+            .then(numRowsAffected => {
+                res.status(204).end()
             })
             .catch(next)
     })
