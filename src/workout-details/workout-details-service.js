@@ -10,6 +10,9 @@ const WorkoutDetailsService = {
         .select('*')
         .where('workouts_id', workoutdetails_id)
     },
+    getWorkoutDetailsAndExercisesByWorkoutId(db, workout_id) {
+      return db.raw(`SELECT	workouts_id, exercises_id, exercise_reps, title, description FROM workout_details wd LEFT JOIN exercises e2 on wd.exercises_id = e2.id WHERE wd.workouts_id = ${workout_id};`); 
+    },
     insertWorkoutDetails(db, newWorkoutDetails) {
       return db
         .insert(newWorkoutDetails)

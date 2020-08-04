@@ -107,4 +107,31 @@ workoutDetailsRouter
       .catch(next)
   })
 
+  workoutDetailsRouter
+  .route('/workout/:workout_id')
+  .all((req, res, next) => {
+    if(isNaN(parseInt(req.params.workout_id))) {
+      return res.status(404).json({
+        error: { message: `Invalid id` }
+      })
+    }
+    WorkoutDetailsService.getWorkoutDetailsAndExercisesByWorkoutId(
+      req.app.get('db'),
+      req.params.workout_id
+    )
+      .then(workoutDetailsAndExercises => {
+        if (workoutDetailsAndExercises.rows.length == 0) {
+          return res.status(404).json({
+            error: { message: `Workout details and exercises for workout id don't exist` }
+          })
+        }
+        res.workoutDetailsAndExercises = workoutDetailsAndExercises.rows
+        next()
+      })
+      .catch(next)
+  })
+  .get((req, res, next) => {
+    res.json(res.workoutDetailsAndExercises)
+  })
+
 module.exports = workoutDetailsRouter

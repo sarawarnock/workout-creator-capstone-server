@@ -18,7 +18,8 @@ exercisesRouter
     const knexInstance = req.app.get('db')
     ExercisesService.getExercises(knexInstance)
       .then(exercises => {
-        res.json(exercises.map(serializeExercise))
+        res.json(exercises)
+          //.map(serializeExercise))
       })
       .catch(next)
   })
