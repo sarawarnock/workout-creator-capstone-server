@@ -39,6 +39,9 @@ workoutsRouter
             workouts_name
         } = req.body
 
+        let responseWorkout
+        let responseWorkoutDetails
+
         total_length = parseInt(total_length)
 
         let newWorkout = {
@@ -287,6 +290,11 @@ workoutsRouter
                             req.app.get('db'),
                             workoutDetailsPayload
                         )
+                        .then(workoutDetails => {
+                            console.log("Hi! Server here.");
+                            responseWorkout = workout;
+                            responseWorkoutDetails = workoutDetails;
+                        })
                     }) 
                         // res
                         //     .status(201)
@@ -300,7 +308,7 @@ workoutsRouter
                 res
                     .status(201)
                     //.location(path.posix.join(req.originalUrl, `/${workout.id}`))
-                    .json({outputExercises})
+                    .json({outputExercises, workout: responseWorkout, workoutDetails: responseWorkoutDetails})
             })
             .catch(next)
     })
