@@ -48,6 +48,27 @@ workoutDetailsRouter
       .catch(next)
   })
 
+  workoutDetailsRouter
+  .route('/workout')
+  .all((req, res, next) => {
+    WorkoutDetailsService.getWorkoutDetailsAndExercises(
+      req.app.get('db')
+    )
+      .then(workoutDetailsAndExercises => {
+        if (workoutDetailsAndExercises.rows.length == 0) {
+          return res.status(404).json({
+            error: { message: `Workout details and exercises don't exist` }
+          })
+        }
+        res.workoutDetailsAndExercises = workoutDetailsAndExercises.rows
+        next()
+      })
+      .catch(next)
+  })
+  .get((req, res, next) => {
+    res.json(res.workoutDetailsAndExercises)
+  })
+
 workoutDetailsRouter
   .route('/:workoutdetails_id')
   .all((req, res, next) => {
@@ -105,27 +126,6 @@ workoutDetailsRouter
         res.status(200).json(serializeWorkoutDetails(updatedWorkoutDetails[0]))
       })
       .catch(next)
-  })
-
-  workoutDetailsRouter
-  .route('/workout')
-  .all((req, res, next) => {
-    WorkoutDetailsService.getWorkoutDetailsAndExercises(
-      req.app.get('db')
-    )
-      .then(workoutDetailsAndExercises => {
-        if (workoutDetailsAndExercises.rows.length == 0) {
-          return res.status(404).json({
-            error: { message: `Workout details and exercises don't exist` }
-          })
-        }
-        res.workoutDetailsAndExercises = workoutDetailsAndExercises.rows
-        next()
-      })
-      .catch(next)
-  })
-  .get((req, res, next) => {
-    res.json(res.workoutDetailsAndExercises)
   })
 
   workoutDetailsRouter
