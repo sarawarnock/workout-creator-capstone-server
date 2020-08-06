@@ -40,7 +40,7 @@ workoutsRouter
         } = req.body
 
         let responseWorkout
-        let responseWorkoutDetails
+        let responseWorkoutDetails = []
 
         total_length = parseInt(total_length)
 
@@ -240,7 +240,8 @@ workoutsRouter
                     // }
                     // return exercise_reps
                     // For each one of the outputExercises, add them into the 'workout_details' table using the workout_id from above
-                    let insertOutputExercises = outputExercises.map(outputExercise => {
+                    //let insertOutputExercises = outputExercises.map(outputExercise => {
+                    Promise.all(outputExercises.map(outputExercise => {
 
                     let exercise_reps = 1
                     if ((workout_type == "EMOM") && (total_length == "5")) {
@@ -293,22 +294,21 @@ workoutsRouter
                         .then(workoutDetails => {
                             console.log("Hi! Server here.");
                             responseWorkout = workout;
-                            responseWorkoutDetails = workoutDetails;
+                            responseWorkoutDetails.push({...workoutDetails, ...outputExercise});
                         })
-                    }) 
-                        // res
-                        //     .status(201)
-                        //     // .location(path.posix.join(req.originalUrl, `/${workout.id}`))
-                        //     .json(serializeWorkout(workout))
-                    })
+                }))
+                .then(data => {
+                    res
+                        .status(201)
+                        // .location(path.posix.join(req.originalUrl, `/${workout.id}`))
+                        // .json(serializeWorkout(workout))
+                        .json({outputExercises, workout: responseWorkout, workoutDetails: responseWorkoutDetails})
+                        console.log(responseWorkout)
+                        console.log(responseWorkoutDetails)
+                    
+                })
+            })
                     .catch(next)
-
-
-                
-                res
-                    .status(201)
-                    //.location(path.posix.join(req.originalUrl, `/${workout.id}`))
-                    .json({outputExercises, workout: responseWorkout, workoutDetails: responseWorkoutDetails})
             })
             .catch(next)
     })

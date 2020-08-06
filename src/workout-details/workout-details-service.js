@@ -4,6 +4,9 @@ const WorkoutDetailsService = {
         .from('workout_details')
         .select('*')
     },
+    getWorkoutDetailsAndExercises(db) {
+      return db.raw(`SELECT	workouts_id, exercises_id, exercise_reps, title, description FROM workout_details wd LEFT JOIN exercises e2 on wd.exercises_id = e2.id;`); 
+    },
     getWorkoutDetailsById(db, workoutdetails_id) {
       return db
         .from('workout_details')
