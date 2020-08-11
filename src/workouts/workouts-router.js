@@ -36,7 +36,8 @@ workoutsRouter
             is_legs,
             total_length,
             workout_type,
-            workouts_name
+            workouts_name,
+            user_id
         } = req.body
 
         let responseWorkout
@@ -45,8 +46,7 @@ workoutsRouter
         total_length = parseInt(total_length)
 
         let newWorkout = {
-            user_id: "1",
-            //workouts_name: "Test Workout",
+            user_id,
 	        total_length,
             workout_type,
             workouts_name
@@ -245,7 +245,7 @@ workoutsRouter
 
                     let exercise_reps = 1
                     if ((workout_type == "EMOM") && (total_length == "5")) {
-                        exercise_reps = 8
+                        exercise_reps = getRandomArbitrary(5, 10)
                     }
                     else if ((workout_type == "AMRAP") && (total_length == "5")) {
                         exercise_reps = getRandomArbitrary(5, 10)
@@ -308,7 +308,7 @@ workoutsRouter
                     
                 })
             })
-                    .catch(next)
+                .catch(next)
             })
             .catch(next)
     })
