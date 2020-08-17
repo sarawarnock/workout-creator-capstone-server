@@ -1,11 +1,9 @@
 const express = require('express')
-const path = require('path')
 const usersRouter = express.Router()
 const jsonBodyParser = express.json()
 const UsersService = require('./users-service')
 
-
-// All users
+//All users
 usersRouter
     .route('/')
     .get((req, res, next) => {
@@ -16,10 +14,11 @@ usersRouter
             })
             .catch(next)
     })
+    //post a new user upon signing up
     .post(jsonBodyParser, (req, res, next) => {
         const { email, password, first_name } = req.body
 
-        console.log("email:", email, "password:", password);
+        //console.log("email:", email, "password:", password);
 
         for (const field of ['email', 'password', 'first_name'])
             if (!req.body[field])
@@ -28,12 +27,13 @@ usersRouter
                 })
         const passwordError = UsersService.validatePassword(password)
 
-        console.log("password error:", passwordError);
+        //console.log("password error:", passwordError);
 
         if (passwordError)
             return res.status(400).json({ error: passwordError })
 
-        UsersService.hasUserWithUserName(
+            //Check to see if the username/email is taken
+            UsersService.hasUserWithUserName(
             req.app.get('db'),
             email
         )
@@ -60,15 +60,16 @@ usersRouter
                                 console.log("user:", user)
                                 res
                                     .status(201)
-                                    //.location(path.posix.join(req.originalUrl, `/${user.id}`))
-                                    .json(UsersService.serializeUser(user))
+                                    .json(
+                                        UsersService.serializeUser(user),
+                                    )
                             })
                     })
             })
             .catch(next)
     })
 
-// Individual users by id
+//Individual users by id
 usersRouter
     .route('/:user_id')
     .all((req, res, next) => {

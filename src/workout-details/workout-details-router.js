@@ -13,6 +13,7 @@ const serializeWorkoutDetails = workout_details => ({
   exercise_reps: workout_details.exercise_reps
 })
 
+//Workout Details for all workouts
 workoutDetailsRouter
   .route('/')
   .get((req, res, next) => {
@@ -48,7 +49,8 @@ workoutDetailsRouter
       .catch(next)
   })
 
-  workoutDetailsRouter
+//Get workout details including title and description of exercises
+workoutDetailsRouter
   .route('/workout')
   .all((req, res, next) => {
     WorkoutDetailsService.getWorkoutDetailsAndExercises(
@@ -69,6 +71,7 @@ workoutDetailsRouter
     res.json(res.workoutDetailsAndExercises)
   })
 
+//get workout details based on the workout details ID
 workoutDetailsRouter
   .route('/:workoutdetails_id')
   .all((req, res, next) => {
@@ -128,7 +131,8 @@ workoutDetailsRouter
       .catch(next)
   })
 
-  workoutDetailsRouter
+//Get workout details, including exercises title and description, for a particular workout
+workoutDetailsRouter
   .route('/workout/:workout_id')
   .all((req, res, next) => {
     if(isNaN(parseInt(req.params.workout_id))) {

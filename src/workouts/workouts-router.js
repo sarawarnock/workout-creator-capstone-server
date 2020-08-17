@@ -12,7 +12,8 @@ const serializeWorkout = workouts => ({
     id: workouts.id,
     user_id: workouts.user_id,
     workouts_name: xss(workouts.workouts_name),
-    total_length: workouts.total_length
+    total_length: workouts.total_length,
+    workout_type: workouts.workout_type
 })
 
 workoutsRouter
@@ -25,6 +26,7 @@ workoutsRouter
             })
             .catch(next)
     })
+    //Post new worrkout depending on what the user checks in the client
     .post(jsonParser, (req, res, next) => {
         let {
             is_advanced,
@@ -52,15 +54,13 @@ workoutsRouter
             workouts_name
         }
         const knexInstance = req.app.get('db')
+        //Get all exercises and filter out the ones that we won't need, based on what the user chose
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
-                // console.log('/////////', exercises)
                 // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
                 for (let i=0; i<exercises.length; i++) {
-                    // console.log('loop function', exercises[i], i+1)
-                    
                     // if ((is_advanced == "") && (exercises[i].is_advanced == 1)) {
                     //     exercises[i].splice
                     // }
@@ -92,10 +92,8 @@ workoutsRouter
                         selectedExercises.push(exercises[i])
                     }
                 }
-                //console.log('**********', selectedExercises)
-                //Create randomization logic 
-                // let workoutExercises = selectedExercises[Math.floor(Math.random()*selectedExercises.length)];
 
+                //Create randomization logic - shuffle exercises from above
                 function shuffle(array) {
                     var currentIndex = array.length, temporaryValue, randomIndex;
                   
@@ -121,8 +119,8 @@ workoutsRouter
                 let shuffledSelectedExercises = shuffle(selectedExercises)
 
                 //console.log(shuffledSelectedExercises)
-                console.log(total_length, workout_type)
-
+                //console.log(total_length, workout_type)
+                //create our outputExercises array by pushing exercises onto it, depending on the time constraint
                 if((total_length == "5") && (workout_type == "EMOM")) {
                     outputExercises.push(shuffledSelectedExercises[0])
                 }
@@ -141,106 +139,77 @@ workoutsRouter
                 }
 
                 if ((total_length == "10") && (workout_type == "AMRAP" || "EMOM")) {
-                    //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
                         numberExercisesToSelect = 2
                     }
-                    //add to the output exercises each one of the selected exercises which were already shuffled
                     for (let i = 0; i < numberExercisesToSelect; i++) {
                         outputExercises.push(shuffledSelectedExercises[i]) 
                     }
                 }
 
                 if ((total_length == "15") && (workout_type == "AMRAP" || "EMOM")) {
-                    //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 3) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
                         numberExercisesToSelect = 3
                     }
-                    //add to the output exercises each one of the selected exercises which were already shuffled
                     for (let i = 0; i < numberExercisesToSelect; i++) {
                         outputExercises.push(shuffledSelectedExercises[i]) 
                     }
                 }
 
                 if ((total_length == "20") && (workout_type == "AMRAP" || "EMOM")) {
-                    //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 4) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
                         numberExercisesToSelect = 4
                     }
-                    //add to the output exercises each one of the selected exercises which were already shuffled
                     for (let i = 0; i < numberExercisesToSelect; i++) {
                         outputExercises.push(shuffledSelectedExercises[i]) 
                     }
                 }
 
                 if ((total_length == "25") && (workout_type == "AMRAP" || "EMOM")) {
-                    //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 5) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
                         numberExercisesToSelect = 5
                     }
-                    //add to the output exercises each one of the selected exercises which were already shuffled
                     for (let i = 0; i < numberExercisesToSelect; i++) {
                         outputExercises.push(shuffledSelectedExercises[i]) 
                     }
                 }
 
                 if ((total_length == "30") && (workout_type == "AMRAP" || "EMOM")) {
-                    //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 6) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
                         numberExercisesToSelect = 6
                     }
-                    //add to the output exercises each one of the selected exercises which were already shuffled
                     for (let i = 0; i < numberExercisesToSelect; i++) {
                         outputExercises.push(shuffledSelectedExercises[i]) 
                     }
                 }
-                
                 return outputExercises
             })
             //After workout POSTed return the list of exercises that were filtered, selected, and randomized
             .then(outputExercises => {
                 console.log(outputExercises)
-                // Insert a new workout in the 'workouts' table 
+                //Insert a new workout in the 'workouts' table 
                 WorkoutsService.insertWorkout(
                     req.app.get('db'),
                     newWorkout
                 )
                     .then(workout => {
-                    // Randomize the exercise reps based on the workout_type and workout_length
+                    //Randomize the exercise reps based on the workout_type and workout_length
                     function getRandomArbitrary(min, max) {
                         min = Math.ceil(min);
                         max = Math.floor(max);
                         return Math.floor(Math.random() * (max - min)) + min;
                     }
-                    // let exercise_reps = 1
-                    // if ((workout_type == "EMOM") && (total_length == "5")) {
-                    //     exercise_reps = 10
-                    // }
-                    // else if ((workout_type == "AMRAP") && (total_length == "5")) {
-                    //     exercise_reps = getRandomArbitrary(5, 10)
-                    // }
-                    // else if ((workout_type == "EMOM") && (total_length == "10")) {
-                    //     exercise_reps = getRandomArbitrary(8, 12)
-                    // }
-                    // else if ((workout_type == "AMRAP") && (total_length == "10")) {
-                    //     exercise_reps = getRandomArbitrary(5, 10)
-                    // }
-                    // else if ((workout_type == "AMRAP") && (total_length == "30")) {
-                    //     exercise_reps = getRandomArbitrary(7, 19)
-                    // }
-                    // return exercise_reps
-                    // For each one of the outputExercises, add them into the 'workout_details' table using the workout_id from above
-                    //let insertOutputExercises = outputExercises.map(outputExercise => {
+
                     Promise.all(outputExercises.map(outputExercise => {
 
                     let exercise_reps = 1
@@ -292,7 +261,7 @@ workoutsRouter
                             workoutDetailsPayload
                         )
                         .then(workoutDetails => {
-                            console.log("Hi! Server here.");
+                            //console.log("Hi! Server here.");
                             responseWorkout = workout;
                             responseWorkoutDetails.push({...workoutDetails, ...outputExercise});
                         })
@@ -303,8 +272,8 @@ workoutsRouter
                         // .location(path.posix.join(req.originalUrl, `/${workout.id}`))
                         // .json(serializeWorkout(workout))
                         .json({outputExercises, workout: responseWorkout, workoutDetails: responseWorkoutDetails})
-                        console.log(responseWorkout)
-                        console.log(responseWorkoutDetails)
+                        // console.log(responseWorkout)
+                        // console.log(responseWorkoutDetails)
                     
                 })
             })
@@ -313,6 +282,7 @@ workoutsRouter
             .catch(next)
     })
 
+//Workouts by ID
 workoutsRouter
     .route('/:workout_id')
     .all((req, res, next) => {
@@ -372,6 +342,7 @@ workoutsRouter
             .catch(next)
     })
 
+//Workouts by user id aka get only the workouts for the logged in user
 workoutsRouter
     .route('/user/:user_id')
     .all((req, res, next) => {
