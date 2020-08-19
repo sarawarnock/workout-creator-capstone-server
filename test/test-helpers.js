@@ -5,27 +5,27 @@ function makeUsersArray() {
   return [
     {
       id: 1,
-      user_name: 'test-user-1',
+      email: 'testuser1@gmail.com',
       first_name: 'Test user 1',
-      password: 'password',
+      password: 'Password1',
     },
     {
       id: 2,
-      user_name: 'test-user-2',
+      email: 'testuser2@gmail.com',
       first_name: 'Test user 2',
-      password: 'password',
+      password: 'Password1',
     },
     {
       id: 3,
-      user_name: 'test-user-3',
+      email: 'testuser3@gmail.com',
       first_name: 'Test user 3',
-      password: 'password',
+      password: 'Password1',
     },
     {
       id: 4,
-      user_name: 'test-user-4',
+      email: 'testuser4@gmail.com',
       first_name: 'Test user 4',
-      password: 'password',
+      password: 'Password1',
     },
   ]
 }

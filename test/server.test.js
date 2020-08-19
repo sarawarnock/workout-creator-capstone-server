@@ -1,14 +1,16 @@
 const knex = require('knex')
 const app = require('../src/app');
+const supertest = require('supertest')
+const { expect } = require('chai');
 
-describe('Todo API:', function () {
+describe('Workouts API:', function () {
   let db;
-  let todos = [
-    { "title": "Buy Milk",   "completed": false },
-    { "title": "Do Laundry",  "completed": true },
-    { "title": "Vacuum", "completed": false },
-    { "title": "Wash Windows",    "completed": true },
-    { "title": "Make Bed", "completed": false }
+  let workouts = [
+    { "id": 1, "title": "Workout1",   "description": "test description" },
+    { "id": 2, "title": "Workout2",  "description": "test description" },
+    { "id": 3, "title": "Workout3", "description": "test description" },
+    { "id": 4, "title": "Workout4",    "description": "test description" },
+    { "id": 5, "title": "Workout5", "description": "test description" }
   ]
 
   before('make knex instance', () => {  
@@ -19,54 +21,53 @@ describe('Todo API:', function () {
     app.set('db', db)
   });
   
-  before('cleanup', () => db.raw('TRUNCATE TABLE todo RESTART IDENTITY;'));
+  //before('cleanup', () => db.raw('TRUNCATE TABLE workouts RESTART IDENTITY;'));
 
-  afterEach('cleanup', () => db.raw('TRUNCATE TABLE todo RESTART IDENTITY;')); 
+  //afterEach('cleanup', () => db.raw('TRUNCATE TABLE workouts RESTART IDENTITY;')); 
 
-  after('disconnect from the database', () => db.destroy()); 
+  //after('disconnect from the database', () => db.destroy()); 
 
-  describe('GET /v1/todos', () => {
+  describe('GET /api/workouts', () => {
 
-    beforeEach('insert some todos', () => {
-      return db('todo').insert(todos);
+    beforeEach('insert some workouts', () => {
+      return db('workouts').insert(workouts);
     })
 
-    it('should respond to GET `/v1/todos` with an array of todos and status 200', function () {
+    it('should respond to GET `/api/workouts` with an array of workouts and status 200', function () {
       return supertest(app)
-        .get('/v1/todos')
+        .get('/api/workouts')
         .expect(200)
         .expect(res => {
           expect(res.body).to.be.a('array');
-          expect(res.body).to.have.length(todos.length);
-          res.body.forEach((item) => {
-            expect(item).to.be.a('object');
-            expect(item).to.include.keys('id', 'title', 'completed');
-          });
+          expect(res.body).to.have.length(workouts.length);
+          // res.body.forEach((item) => {
+          //   expect(item).to.be.a('object');
+          //   expect(item).to.include.keys('id', 'title', 'completed');
+          // });
         });
     });
 
   });
 
-  
-  describe('GET /v1/todos/:id', () => {
+  describe('GET /api/workout/:id', () => {
 
-    beforeEach('insert some todos', () => {
-      return db('todo').insert(todos);
+    beforeEach('insert some workouts', () => {
+      return db('workouts').insert(workouts);
     })
 
-    it('should return correct todo when given an id', () => {
+    it('should return correct workout when given an id', () => {
       let doc;
-      return db('todo')
+      return db('workouts')
         .first()
         .then(_doc => {
           doc = _doc
           return supertest(app)
-            .get(`/v1/todos/${doc.id}`)
+            .get(`/api/workouts/${workout.id}`)
             .expect(200);
         })
         .then(res => {
           expect(res.body).to.be.an('object');
-          expect(res.body).to.include.keys('id', 'title', 'completed');
+          expect(res.body).to.include.keys('id', 'title', 'description');
           expect(res.body.id).to.equal(doc.id);
           expect(res.body.title).to.equal(doc.title);
           expect(res.body.completed).to.equal(doc.completed);
@@ -75,30 +76,31 @@ describe('Todo API:', function () {
 
     it('should respond with a 404 when given an invalid id', () => {
       return supertest(app)
-        .get('/v1/todos/aaaaaaaaaaaa')
+        .get('/api/workouts/aaaaaaaaaaaa')
         .expect(404);
     });
     
   });
 
   
-  describe('POST /v1/todos', function () {
+  describe('POST /api/workouts', function () {
 
-    it('should create and return a new todo when provided valid data', function () {
-      const newItem = {
-        'title': 'Do Dishes'
+    it('should create and return a new workout when provided valid data', function () {
+      const newWorkout = {
+        'title': 'New Workout',
+        'description': 'new workout desc'
       };
 
       return supertest(app)
-        .post('/v1/todos')
-        .send(newItem)
+        .post('/api/workouts')
+        .send(newWorkout)
         .expect(201)
         .expect(res => {
           expect(res.body).to.be.a('object');
-          expect(res.body).to.include.keys('id', 'title', 'completed');
+          expect(res.body).to.include.keys('id', 'title', 'description');
           expect(res.body.title).to.equal(newItem.title);
           expect(res.body.completed).to.be.false;
-          expect(res.headers.location).to.equal(`/v1/todos/${res.body.id}`)
+          expect(res.headers.location).to.equal(`/api/workouts/${res.body.id}`)
         });
     });
 
@@ -107,82 +109,25 @@ describe('Todo API:', function () {
         foobar: 'broken item'
       };
       return supertest(app)
-        .post('/v1/todos')
+        .post('/api/workouts')
         .send(badItem)
         .expect(400);
     });
 
   });
 
-  
-  describe('PATCH /v1/todos/:id', () => {
+  describe('DELETE /api/workouts/:id', () => {
 
-    beforeEach('insert some todos', () => {
-      return db('todo').insert(todos);
+    beforeEach('insert some workouts', () => {
+      return db('workouts').insert(workouts);
     })
 
-    it('should update item when given valid data and an id', function () {
-      const item = {
-        'title': 'Buy New Dishes'
-      };
-      
-      let doc;
-      return db('todo')
+    it('should delete a workout by id', () => {
+      return db('workouts')
         .first()
-        .then(_doc => {
-          doc = _doc
+        .then(workout => {
           return supertest(app)
-            .patch(`/v1/todos/${doc.id}`)
-            .send(item)
-            .expect(200);
-        })
-        .then(res => {
-          expect(res.body).to.be.a('object');
-          expect(res.body).to.include.keys('id', 'title', 'completed');
-          expect(res.body.title).to.equal(item.title);
-          expect(res.body.completed).to.be.false;
-        });
-    });
-
-    it('should respond with 400 status when given bad data', function () {
-      const badItem = {
-        foobar: 'broken item'
-      };
-      
-      return db('todo')
-        .first()
-        .then(doc => {
-          return supertest(app)
-            .patch(`/v1/todos/${doc.id}`)
-            .send(badItem)
-            .expect(400);
-        })
-    });
-
-    it('should respond with a 404 for an invalid id', () => {
-      const item = {
-        'title': 'Buy New Dishes'
-      };
-      return supertest(app)
-        .patch('/v1/todos/aaaaaaaaaaaaaaaaaaaaaaaa')
-        .send(item)
-        .expect(404);
-    });
-
-  });
-
-  describe('DELETE /v1/todos/:id', () => {
-
-    beforeEach('insert some todos', () => {
-      return db('todo').insert(todos);
-    })
-
-    it('should delete an item by id', () => {
-      return db('todo')
-        .first()
-        .then(doc => {
-          return supertest(app)
-            .delete(`/v1/todos/${doc.id}`)
+            .delete(`/api/workouts/${workout.id}`)
             .expect(204);
         })
     });
@@ -190,7 +135,7 @@ describe('Todo API:', function () {
     it('should respond with a 404 for an invalid id', function () {
       
       return supertest(app)
-        .delete('/v1/todos/aaaaaaaaaaaaaaaaaaaaaaaa')
+        .delete('/api/workouts/aaaaaaaaaaaaaaaaaaaaaaaa')
         .expect(404);
     });
 

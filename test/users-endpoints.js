@@ -6,7 +6,7 @@ const { expect } = require('chai')
 const bcrypt = require('bcryptjs')
 const { comparePasswords } = require('../src/auth/auth-service')
 
-describe.only('Users Endpoints', function() {
+describe.skip('Users Endpoints', function() {
   let db
 
   const { testUsers } = helpers.makeWorkoutFixtures()
