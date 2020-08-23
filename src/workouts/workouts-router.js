@@ -54,6 +54,15 @@ workoutsRouter
             workouts_name
         }
         const knexInstance = req.app.get('db')
+
+        for (const [key, value] of Object.entries(newWorkout))
+            if (value == null)
+                return res.status(400).json({
+                    error: {
+                        message: `Missing ${key} in request body`
+                    }
+                })
+
         //Get all exercises and filter out the ones that we won't need, based on what the user chose
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
@@ -118,8 +127,6 @@ workoutsRouter
                 let numberExercisesToSelect = 1
                 let shuffledSelectedExercises = shuffle(selectedExercises)
 
-                //console.log(shuffledSelectedExercises)
-                //console.log(total_length, workout_type)
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
                 if((total_length == "5") && (workout_type == "EMOM")) {
                     outputExercises.push(shuffledSelectedExercises[0])
@@ -261,7 +268,6 @@ workoutsRouter
                             workoutDetailsPayload
                         )
                         .then(workoutDetails => {
-                            //console.log("Hi! Server here.");
                             responseWorkout = workout;
                             responseWorkoutDetails.push({...workoutDetails, ...outputExercise});
                         })
