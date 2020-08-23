@@ -6,11 +6,11 @@ const { expect } = require('chai');
 describe('Workouts API:', function () {
   let db;
   let workouts = [
-    { "id": 1, "title": "Workout1",   "description": "test description" },
-    { "id": 2, "title": "Workout2",  "description": "test description" },
-    { "id": 3, "title": "Workout3", "description": "test description" },
-    { "id": 4, "title": "Workout4",    "description": "test description" },
-    { "id": 5, "title": "Workout5", "description": "test description" }
+    { "id": 1, "user_id": 1, "workouts_name": "Workout1", "total_length": 10, "workout_type": "AMRAP" },
+    { "id": 2, "user_id": 1, "workouts_name": "Workout2", "total_length": 10, "workout_type": "AMRAP" },
+    { "id": 3, "user_id": 2, "workouts_name": "Workout2", "total_length": 15, "workout_type": "EMOM" },
+    { "id": 4, "user_id": 1, "workouts_name": "Workout2", "total_length": 10, "workout_type": "AMRAP" },
+    { "id": 5, "user_id": 5, "workouts_name": "Workout2", "total_length": 20, "workout_type": "EMOM" }
   ]
 
   before('make knex instance', () => {  
@@ -19,14 +19,13 @@ describe('Workouts API:', function () {
       connection: process.env.TEST_DATABASE_URL,
     })
     app.set('db', db)
-    console.log('///////////////////////////////////',process.env.TEST_DATABASE_URL)
   });
   
-  //before('cleanup', () => db.raw('TRUNCATE TABLE workouts RESTART IDENTITY;'));
+  before('cleanup', () => db.raw('TRUNCATE TABLE workouts RESTART IDENTITY;'));
 
-  //afterEach('cleanup', () => db.raw('TRUNCATE TABLE workouts RESTART IDENTITY;')); 
+  afterEach('cleanup', () => db.raw('TRUNCATE TABLE workouts RESTART IDENTITY;')); 
 
-  //after('disconnect from the database', () => db.destroy()); 
+  after('disconnect from the database', () => db.destroy()); 
 
   describe('GET /api/workouts', () => {
 
@@ -41,10 +40,6 @@ describe('Workouts API:', function () {
         .expect(res => {
           expect(res.body).to.be.a('array');
           expect(res.body).to.have.length(workouts.length);
-          // res.body.forEach((item) => {
-          //   expect(item).to.be.a('object');
-          //   expect(item).to.include.keys('id', 'title', 'completed');
-          // });
         });
     });
 
@@ -57,21 +52,18 @@ describe('Workouts API:', function () {
     })
 
     it('should return correct workout when given an id', () => {
-      let doc;
+      let workout;
       return db('workouts')
         .first()
-        .then(_doc => {
-          doc = _doc
+        .then(workout => {
+          workout = workout
           return supertest(app)
             .get(`/api/workouts/${workout.id}`)
             .expect(200);
         })
         .then(res => {
           expect(res.body).to.be.an('object');
-          expect(res.body).to.include.keys('id', 'title', 'description');
-          expect(res.body.id).to.equal(doc.id);
-          expect(res.body.title).to.equal(doc.title);
-          expect(res.body.completed).to.equal(doc.completed);
+          expect(res.body).to.include.keys('id', 'user_id', 'workouts_name', 'total_length', 'workout_type');
         });
     });
 
@@ -88,8 +80,11 @@ describe('Workouts API:', function () {
 
     it('should create and return a new workout when provided valid data', function () {
       const newWorkout = {
-        'title': 'New Workout',
-        'description': 'new workout desc'
+        'id': 1,
+        'user_id': 1,
+        'workouts_name': 'test name',
+        'total_length': 10,
+        'workout_type': 'EMOM'
       };
 
       return supertest(app)
@@ -98,20 +93,16 @@ describe('Workouts API:', function () {
         .expect(201)
         .expect(res => {
           expect(res.body).to.be.a('object');
-          expect(res.body).to.include.keys('id', 'title', 'description');
-          expect(res.body.title).to.equal(newItem.title);
-          expect(res.body.completed).to.be.false;
-          expect(res.headers.location).to.equal(`/api/workouts/${res.body.id}`)
         });
     });
 
     it('should respond with 400 status when given bad data', function () {
-      const badItem = {
+      const badWorkout = {
         foobar: 'broken item'
       };
       return supertest(app)
         .post('/api/workouts')
-        .send(badItem)
+        .send(badWorkout)
         .expect(400);
     });
 

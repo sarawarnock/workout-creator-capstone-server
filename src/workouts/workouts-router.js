@@ -269,12 +269,7 @@ workoutsRouter
                 .then(data => {
                     res
                         .status(201)
-                        // .location(path.posix.join(req.originalUrl, `/${workout.id}`))
-                        // .json(serializeWorkout(workout))
                         .json({outputExercises, workout: responseWorkout, workoutDetails: responseWorkoutDetails})
-                        // console.log(responseWorkout)
-                        // console.log(responseWorkoutDetails)
-                    
                 })
             })
                 .catch(next)
