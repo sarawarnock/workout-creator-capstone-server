@@ -1,0 +1,85 @@
+/* *********************************** */
+* {
+    text-align: center;
+}
+
+main {
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.app-name {
+    float: left;
+}
+
+.big-btn {
+    margin: 20px;
+    padding: 30px;
+}
+
+/* *********************************** */
+
+.login-form {
+    text-align: center;
+    padding: 10px;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.login-button {
+    text-align: center;
+}
+
+input {
+    margin: 10px;
+}
+
+/* *********************************** */
+
+body {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.button {
+    padding: 25px;
+    margin: 25px;
+}
+
+.workout-btn {
+    text-align: center;
+}
+
+.acct-info {
+    text-align: center;
+}
+
+/* *********************************** */
+
+main {
+    text-align: center;
+}
+
+label {
+    margin: 10px;
+}
+
+input {
+    margin: 10px;
+}
+
+table {
+    text-align: center;
+    width: 100%;
+}
+
+.new-workout {
+    border: 1px solid black;
+}
