@@ -2,7 +2,6 @@ const knex = require('knex')
 const app = require('../src/app');
 const supertest = require('supertest')
 const { expect } = require('chai');
-const workoutDetailsRouter = require('../src/workout-details/workout-details-router');
 
 describe('Workouts API', function () {
   let db;
@@ -199,7 +198,7 @@ describe('Users API', function () {
         foobar: 'broken user'
       };
       return supertest(app)
-        .post('/api/workouts')
+        .post('/api/users')
         .send(badUser)
         .expect(400);
     });
