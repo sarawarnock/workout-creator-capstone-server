@@ -37,5 +37,3 @@ app.use('/api/workoutdetails', workoutDetailsRouter)
 app.use(errorHandler)
 
 module.exports = app
-
-// test
