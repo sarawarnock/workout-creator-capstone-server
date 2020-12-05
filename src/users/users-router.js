@@ -2,6 +2,7 @@ const express = require('express')
 const usersRouter = express.Router()
 const jsonBodyParser = express.json()
 const UsersService = require('./users-service')
+const { requireAuth } = require('../middleware/jwt-auth')
 
 //All users
 usersRouter
@@ -71,34 +72,44 @@ usersRouter
 
 //Individual users by id
 usersRouter
+    // .route('/:user_id')
+    // .all((req, res, next) => {
+    //     const { user_id } = req.params;
+    //     UsersService.getById(req.app.get('db'), user_id)
+    //         .then(user => {
+    //             if (!user) {
+    //                 return res
+    //                     .status(404)
+    //                     .send({ error: { message: `User doesn't exist.` } })
+    //             }
+    //             res.user = user
+    //             next()
+    //         })
+    //         .catch(next)
+    // })
+    // .get((req, res) => {
+    //     res.json(UsersService.serializeUser(res.user))
+    // })
+    // .delete((req, res, next) => {
+    //     const { user_id } = req.params;
+    //     UsersService.deleteUser(
+    //         req.app.get('db'),
+    //         user_id
+    //     )
+    //         .then(numRowsAffected => {
+    //             res.status(204).end()
+    //         })
+    //         .catch(next)
+    // })
+
     .route('/:user_id')
-    .all((req, res, next) => {
-        const { user_id } = req.params;
-        UsersService.getById(req.app.get('db'), user_id)
-            .then(user => {
-                if (!user) {
-                    return res
-                        .status(404)
-                        .send({ error: { message: `User doesn't exist.` } })
-                }
-                res.user = user
-                next()
-            })
-            .catch(next)
-    })
-    .get((req, res) => {
-        res.json(UsersService.serializeUser(res.user))
-    })
-    .delete((req, res, next) => {
-        const { user_id } = req.params;
-        UsersService.deleteUser(
-            req.app.get('db'),
-            user_id
-        )
-            .then(numRowsAffected => {
-                res.status(204).end()
-            })
-            .catch(next)
+    .all(requireAuth)
+    .get((req, res, next) => {
+        UsersService.getById(req.app.get('db'), req.user.id)
+        .then(user => {
+            res.json(UsersService.serializeUser(user))
+        })
+        .catch(next)
     })
 
 module.exports = usersRouter
