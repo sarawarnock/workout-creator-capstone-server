@@ -105,6 +105,7 @@ usersRouter
     .route('/:user_id')
     .all(requireAuth)
     .get((req, res, next) => {
+        console.log(req)
         UsersService.getById(req.app.get('db'), req.user.id)
         .then(user => {
             res.json(UsersService.serializeUser(user))

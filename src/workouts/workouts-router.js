@@ -4,6 +4,8 @@ const xss = require('xss')
 const WorkoutsService = require('./workouts-service')
 const ExercisesService = require('../exercises/exercises-service')
 const WorkoutDetailsService = require('../workout-details/workout-details-service')
+const { requireAuth } = require('../middleware/jwt-auth')
+const UsersService = require('../users/users-service')
 
 const workoutsRouter = express.Router()
 const jsonParser = express.json()
@@ -345,40 +347,77 @@ workoutsRouter
 
 //Workouts by user id aka get only the workouts for the logged in user
 workoutsRouter
-    .route('/user/:user_id')
+    //.route('/user/:user_id')
+    .route('/user/loggedin')
+    // .all((req, res, next) => {
+    //     if (isNaN(parseInt(req.params.user_id))) {
+    //         return res.status(404).json({
+    //             error: { message: `Invalid id` }
+    //         })
+    //     }
+    //     WorkoutsService.getWorkoutByUserId(
+    //         req.app.get('db'),
+    //         req.user.id
+    //     )
+    //         .then(workout => {
+    //             if (!workout) {
+    //                 return res.status(404).json({
+    //                     error: { message: `Workout doesn't exist` }
+    //                 })
+    //             }
+    //             res.workout = workout
+    //             next()
+    //         })
+    //         .catch(next)
+    // })
+    // .get((req, res, next) => {
+    //     res.json(res.workout)
+    // })
+    // .delete((req, res, next) => {
+    //     WorkoutsService.deleteWorkout(
+    //         req.app.get('db'),
+    //         req.params.user_id
+    //     )
+    //         .then(numRowsAffected => {
+    //             res.status(204).end()
+    //         })
+    //         .catch(next)
+    // })
+
+    .all(requireAuth)
     .all((req, res, next) => {
-        if (isNaN(parseInt(req.params.user_id))) {
-            return res.status(404).json({
-                error: { message: `Invalid id` }
-            })
-        }
-        WorkoutsService.getWorkoutByUserId(
-            req.app.get('db'),
-            req.params.user_id
-        )
-            .then(workout => {
-                if (!workout) {
-                    return res.status(404).json({
-                        error: { message: `Workout doesn't exist` }
-                    })
-                }
-                res.workout = workout
-                next()
-            })
-            .catch(next)
-    })
-    .get((req, res, next) => {
-        res.json(res.workout)
-    })
-    .delete((req, res, next) => {
-        WorkoutsService.deleteWorkout(
-            req.app.get('db'),
-            req.params.user_id
-        )
-            .then(numRowsAffected => {
-                res.status(204).end()
-            })
-            .catch(next)
-    })
+            if (isNaN(parseInt(req.user.id))) {
+                return res.status(404).json({
+                    error: { message: `Invalid id` }
+                })
+            }
+            WorkoutsService.getWorkoutByUserId(
+                req.app.get('db'),
+                req.user.id
+            )
+                .then(workout => {
+                    if (!workout) {
+                        return res.status(404).json({
+                            error: { message: `Workout doesn't exist` }
+                        })
+                    }
+                    res.workout = workout
+                    next()
+                })
+                .catch(next)
+        })
+        .get((req, res, next) => {
+            res.json(res.workout)
+        })
+    // .get((req, res, next) => {
+    //     console.log(req.user.id)
+    //     //UsersService.getById(req.app.get('db'), req.user.id)
+    //     WorkoutsService.getWorkoutByUserId(req.app.get('db'), req.user.id)
+    //     .then(res => {
+    //         //res.json(UsersService.serializeUser(user))
+    //         console.log(res.json(res.workout))
+    //     })
+    //     .catch(next)
+    // })
 
 module.exports = workoutsRouter
