@@ -413,6 +413,8 @@ workoutsRouter
         console.log("user ID",req.user.id)
         WorkoutsService.getWorkoutByUserId(req.app.get('db'), req.user.id)
             .then(workouts => {
+                console.log(workouts);
+                res.status(200)
                 res.json(WorkoutsService.serializeWorkouts(workouts))
             })
             .catch(next)
