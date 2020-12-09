@@ -1,3 +1,6 @@
+const Treeize = require('treeize');
+const xss = require('xss');
+
 const WorkoutsService = {
     getWorkouts(db) {
       return db
@@ -42,8 +45,22 @@ const WorkoutsService = {
         .where({id: workout_id})
         .update(newWorkout, returning=true)
         .returning('*')
+    },
+    serializeWorkouts(workouts) {
+      return workouts.map(this.serializeWorkout)
+    },
+    serializeWorkout(workout) {
+      const workoutTree = new Treeize();
+      const workoutData = workoutTree.grow([workout]).getData()[0];
+
+      return {
+        id: workoutData.id,
+        user_id: workoutData.user_id,
+        workouts_name: xss(workoutData.workouts_name),
+        total_length: workoutData.total_length,
+        workout_type: xss(workoutData.workout_type)
+      }
     }
-  
   }
   
   module.exports = WorkoutsService
