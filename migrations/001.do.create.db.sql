@@ -33,12 +33,27 @@ CREATE TABLE workout_details (
 	exercise_reps int NOT NULL DEFAULT 1
 );
 
-INSERT INTO public.users ("email", "password", "first_name") VALUES 
-('admin@gmail.com','Admin123', 'Bob'),
-('user@gmail.com','User123', 'Bill');
+INSERT INTO users (id, email, password, first_name) VALUES 
+(22, 'user', '$2a$12$YirKmnoVinL5zRIuUlqzhuOBHeffvaVoK/K8ov7xexuLbwITlEdH2', 'User');
 
+INSERT INTO workouts (id, user_id, workouts_name, total_length, workout_type)
+VALUES
+    (122, 22, 'Hailstorm', 15, 'EMOM'),
+    (123, 22, 'Shell', 15, 'AMRAP'),
+    (124, 22, 'Lime', 10, 'EMOM');
 
-INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
+-- INSERT INTO workout_details (id, workouts_id, exercises_id, exercise_reps)
+-- VALUES
+--     (228, 122, 24, 9),
+--     (229, 122, 18, 8),
+--     (230, 122, 29, 8),
+--     (231, 123, 2, 14),
+--     (232, 123, 47, 14),
+--     (233, 123, 39, 22),
+--     (234, 124, 24, 8),
+--     (235, 124, 29, 5);
+
+INSERT INTO exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
 (1,'air squat','keep feet under shoulders, send hips back and down, stand all the way up',0,1,0,0,0,0,0)
 ,(2,'jumping air squat','perform an air squat and jump at the top',0,1,0,0,0,1,0)
 ,(3,'sit up','feet on floor or butterflied, sit all the way up so shoulders come through hips',0,0,0,0,1,0,0)
@@ -50,7 +65,7 @@ INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_ch
 ,(9,'jump rope single under','jump rope, passing the rope under your feet once per jump',0,0,0,0,0,1,0)
 ,(10,'jump rope double under','jump rope, passing the rope under your feet twice per jump',0,0,0,0,0,1,1)
 ;
-INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
+INSERT INTO exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
 (11,'leg lift','laying down, keeping lower back on the floor, lift legs up to 90 degrees and lower back down',0,0,0,0,1,0,0)
 ,(12,'scissor kick','laying down, move the legs side to side in a scissor motion',0,0,0,0,1,0,0)
 ,(13,'pike leg lift','seated with legs in front, lean forward and bring straight legs off ground',0,0,0,0,1,0,1)
@@ -62,7 +77,7 @@ INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_ch
 ,(19,'gorilla burpee','perform a burpee, chest to floor, and at the top do a tuck jump',0,0,0,0,0,1,0)
 ,(20,'burpee','send legs back to a plank positon, drop knees, get chest to floor, then get all the way up, jumping at the top',0,0,0,0,0,1,0)
 ;
-INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
+INSERT INTO exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
 (21,'pike push up','place feet on ground (or on chair or bench for more challenge) so your body is in an inverted V, drop head in in front of hands, press back up',1,0,0,1,0,0,0)
 ,(22,'strict handstand push up','against a wall, come up into a handstand, lower your head toward the floor and press back up',1,0,0,0,0,0,1)
 ,(23,'kipping handstand push up','against a wall, come up into a handstand, lower body down so head touches the floor, bring knees to chest and use your hips to help press back up',1,0,0,0,0,0,1)
@@ -74,7 +89,7 @@ INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_ch
 ,(29,'glute bridge v walk outs','glute bridge position, walk legs out in a "V" until they are straight, but still off the floor, and then walk them back in',0,1,1,0,0,0,1)
 ,(30,'prisoner death march','start standing with hands behind head, step one foot out about 1.5/2 feet in front of you, hinge at the hips so chest is parallel to ground, come back up and switch sides',0,1,1,0,0,0,0)
 ;
-INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
+INSERT INTO exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
 (31,'dragon flag','laying down, lift legs and lower back straight up off the floor, then without back coming back down, slowly lower legs',0,0,0,0,1,0,1)
 ,(32,'forward lunge to reverse lunge','perform a forward lunge, and then with the same leg, a reverse lunge, then switch sides',0,1,0,0,0,0,0)
 ,(33,'scapular push up','in a plank position (on hands), bring shoulder blades together and then press back out, keeping arms straight the whole time',0,0,1,0,1,0,0)
@@ -86,7 +101,7 @@ INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_ch
 ,(39,'quadruped walk','start in a tabletop position, lift knees 2 inches off ground, walk forward, keeping back straight',0,0,0,0,1,0,0)
 ,(40,'bench/chair dip','find a bench or a chair, place hands on the edge, dip down so your arms come to 90 degrees. knees bent = easier, legs straight = harder',1,0,0,1,0,0,0)
 ;
-INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
+INSERT INTO exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
 (41,'skater jump','start standing, bring one leg behind (and to the side of) the other, keeping the leg straight, so the toe touches the ground, switch sides ',0,1,0,0,0,1,0)
 ,(42,'man maker','start in a plank position, do a push up, do a row (R side), do another push up, row L, jump to a squat position, stand up = 1 rep',0,0,0,0,0,1,0)
 ,(43,'plank walk out','start standing, walk hands all the way out past a plank position, walk back in',0,0,0,0,1,0,0)
@@ -98,7 +113,7 @@ INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_ch
 ,(49,'groiner','aka bottom part of a burpee: going from a plank position, to a squat, and back to a plank',0,0,0,0,0,1,0)
 ,(50,'spider push up','plank position, bringing knee to same elbow while performing a push up',1,0,0,1,0,0,1)
 ;
-INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
+INSERT INTO exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
 (51,'broad jump','start in a squat position, jump as far forward as you can, taking off and landing on 2 feet',0,1,0,0,0,1,0)
 ,(52,'mountain climber','plank position on hands, bring knee to same elbow, swiching sides each rep',0,0,0,0,1,0,0)
 ,(53,'wall climb','starting on stomach with feet against a wall, push yourself up, and walk up the wall until you''re in a handstand position, then walk back down',1,0,0,0,1,0,1)
@@ -110,7 +125,7 @@ INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_ch
 ,(59,'jumping deadlift','start standing, hinge at hips, jumping on the way back up (not a squat!)',0,0,0,0,0,1,0)
 ,(60,'calf raise','using a step, bring heels off, lower heels and then press back up onto your toes',0,1,0,0,0,0,0)
 ;
-INSERT INTO public.exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
+INSERT INTO exercises (id,title,description,is_arms,is_legs,is_back,is_chest,is_core,is_cardio,is_advanced) VALUES 
 (61,'jumping jacks','start standing, jumping legs out while raising arms to the side and above your head',0,0,0,0,0,1,0)
 ,(62,'donkey kick','tabletop position, bend one knee and lift heel straight up to the ceiling, perform all reps on one side, then switch',0,1,0,0,0,0,0)
 ,(63,'plank jack','plank position, jump legs out to sides, and back in',0,0,0,0,1,0,0)
