@@ -112,7 +112,8 @@ workoutsRouter
 
                 //Create randomization logic - shuffle exercises from above
                 function shuffle(array) {
-                    var currentIndex = array.length, temporaryValue, randomIndex;
+                    console.log('array::', array);
+                    let currentIndex = array.length, temporaryValue, randomIndex;
                   
                     // While there remain elements to shuffle...
                     while (0 !== currentIndex) {
