@@ -29,7 +29,7 @@ workoutsRouter
             .catch(next)
     })
     //Post new worrkout depending on what the user checks in the client
-    .post(jsonParser, (req, res, next) => {
+    .post(jsonParser, requireAuth, (req, res, next) => {
         let {
             is_advanced,
             is_arms,
@@ -40,9 +40,13 @@ workoutsRouter
             is_legs,
             total_length,
             workout_type,
-            workouts_name,
-            user_id
+            workouts_name
         } = req.body
+
+        console.log('req.user::', req.user);
+        let user_id = req.user.id
+
+        console.log('req.body', req.body);
 
         let responseWorkout
         let responseWorkoutDetails = []
@@ -55,6 +59,7 @@ workoutsRouter
             workout_type,
             workouts_name
         }
+        console.log('newWorkout::', newWorkout);
         const knexInstance = req.app.get('db')
 
         for (const [key, value] of Object.entries(newWorkout))
@@ -68,6 +73,7 @@ workoutsRouter
         //Get all exercises and filter out the ones that we won't need, based on what the user chose
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
+                console.log('exercises::', exercises);
                 // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
@@ -75,31 +81,31 @@ workoutsRouter
                     // if ((is_advanced == "") && (exercises[i].is_advanced == 1)) {
                     //     exercises[i].splice
                     // }
-                    if ((is_advanced == "on") && (exercises[i].is_advanced == 1) && (exercises[i].is_arms == 1)) {
+                    if ((is_advanced == true) && (exercises[i].is_advanced == 1) && (exercises[i].is_arms == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_advanced == "on") && (exercises[i].is_advanced == 1) && (exercises[i].is_legs == 1)) {
+                    else if ((is_advanced == true) && (exercises[i].is_advanced == 1) && (exercises[i].is_legs == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    // else if ((is_advanced == "on") && (exercises[i].is_advanced == 1)) {
+                    // else if ((is_advanced == true) && (exercises[i].is_advanced == 1)) {
                     //     selectedExercises.push(exercises[i])
                     // }
-                    else if ((is_arms == "on") && (exercises[i].is_arms == 1)) {
+                    else if ((is_arms == true) && (exercises[i].is_arms == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_back == "on") && (exercises[i].is_back == 1)) {
+                    else if ((is_back == true) && (exercises[i].is_back == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_cardio == "on") && (exercises[i].is_cardio == 1)) {
+                    else if ((is_cardio == true) && (exercises[i].is_cardio == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_chest == "on") && (exercises[i].is_chest == 1)) {
+                    else if ((is_chest == true) && (exercises[i].is_chest == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_core == "on") && (exercises[i].is_core == 1)) {
+                    else if ((is_core == true) && (exercises[i].is_core == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_legs == "on") && (exercises[i].is_legs == 1)) {
+                    else if ((is_legs == true) && (exercises[i].is_legs == 1)) {
                         selectedExercises.push(exercises[i])
                     }
                 }
@@ -205,7 +211,7 @@ workoutsRouter
             })
             //After workout POSTed return the list of exercises that were filtered, selected, and randomized
             .then(outputExercises => {
-                console.log(outputExercises)
+                // console.log(outputExercises)
                 //Insert a new workout in the 'workouts' table 
                 WorkoutsService.insertWorkout(
                     req.app.get('db'),
@@ -264,7 +270,7 @@ workoutsRouter
 	                        exercises_id: outputExercise.id,
 	                        exercise_reps
                         }
-                        console.log(workoutDetailsPayload)
+                        // console.log(workoutDetailsPayload)
                         return WorkoutDetailsService.insertWorkoutDetails(
                             req.app.get('db'),
                             workoutDetailsPayload
@@ -410,10 +416,10 @@ workoutsRouter
     //     })
     .all(requireAuth)
     .get((req, res, next) => {
-        console.log("user ID",req.user.id)
+        // console.log("user ID",req.user.id)
         WorkoutsService.getWorkoutByUserId(req.app.get('db'), req.user.id)
             .then(workouts => {
-                console.log(workouts);
+                // console.log(workouts);
                 res.status(200)
                 res.json(WorkoutsService.serializeWorkouts(workouts))
             })
