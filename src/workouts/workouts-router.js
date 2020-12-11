@@ -137,6 +137,7 @@ workoutsRouter
                 let shuffledSelectedExercises = shuffle(selectedExercises)
 
                 console.log('total_length::', total_length)
+                console.log('selectedExercises length::', selectedExercises.length)
 
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
                 if((total_length == "5") && (workout_type == "EMOM")) {
@@ -271,9 +272,9 @@ workoutsRouter
                         let workoutDetailsPayload = {
                             workouts_id: workout.id,
 	                        exercises_id: outputExercise.id,
-	                        exercise_reps
+	                        exercise_reps: exercise_reps
                         }
-                        // console.log(workoutDetailsPayload)
+                        console.log('workoutDetails payload::', workoutDetailsPayload)
                         return WorkoutDetailsService.insertWorkoutDetails(
                             req.app.get('db'),
                             workoutDetailsPayload
