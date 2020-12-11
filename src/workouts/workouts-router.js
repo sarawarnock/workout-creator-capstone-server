@@ -136,6 +136,8 @@ workoutsRouter
                 let numberExercisesToSelect = 1
                 let shuffledSelectedExercises = shuffle(selectedExercises)
 
+                console.log('total_length::', total_length)
+
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
                 if((total_length == "5") && (workout_type == "EMOM")) {
                     outputExercises.push(shuffledSelectedExercises[0])
