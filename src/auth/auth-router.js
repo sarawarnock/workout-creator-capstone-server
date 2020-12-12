@@ -7,7 +7,7 @@ const jsonBodyParser = express.json()
 //something here?..
 authRouter
   .post('/login', jsonBodyParser, (req, res, next) => {
-    console.log('Request Body:', req.body)
+    // console.log('Request Body:', req.body)
     const { email, password } = req.body
     const loginUser = { email, password }
 
@@ -21,16 +21,16 @@ authRouter
         loginUser.email
       )
       .then(dbUser => {
-        console.log('dbUser:::', dbUser)
+        // console.log('dbUser:::', dbUser)
         if (!dbUser)
           return res.status(400).json({
             error: 'Incorrect email or password',
           })
         return AuthService.comparePasswords(loginUser.password, dbUser.password)
           .then(compareMatch => {
-            console.log('user password:::', loginUser.password);
-            console.log('dbUser password:::', dbUser.password);
-            console.log('compareMatch:', compareMatch)
+            // console.log('user password:::', loginUser.password);
+            // console.log('dbUser password:::', dbUser.password);
+            // console.log('compareMatch:', compareMatch)
             if (!compareMatch)
               return res.status(400).json({
                 error: 'Incorrect email or password',
@@ -41,9 +41,9 @@ authRouter
               user_id: dbUser.id,
               first_name: dbUser.first_name
             }
-            console.log("dbUser:", dbUser)
-            console.log('sub:', sub)
-            console.log("payload:", payload)
+            // console.log("dbUser:", dbUser)
+            // console.log('sub:', sub)
+            // console.log("payload:", payload)
             res.send({
               authToken: AuthService.createJwt(sub, payload),
               userId: dbUser.id,

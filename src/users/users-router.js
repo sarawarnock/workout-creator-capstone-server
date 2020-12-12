@@ -10,7 +10,7 @@ usersRouter
     .get((req, res, next) => {
         UsersService.getAllUsers(req.app.get('db'))
             .then(user => {
-                console.log('User:', user)
+                // console.log('User:', user)
                 res.json(user)
             })
             .catch(next)
@@ -40,14 +40,14 @@ usersRouter
         )
             .then(hasUserWithUserName => {
 
-                console.log("hasUserWithUserName:", hasUserWithUserName);
+                // console.log("hasUserWithUserName:", hasUserWithUserName);
 
                 if (hasUserWithUserName)
                     return res.status(400).json({ error: `Username already taken` })
 
                 return UsersService.hashPassword(password)
                     .then(hashedPassword => {
-                        console.log("hashedpassword", hashedPassword);
+                        // console.log("hashedpassword", hashedPassword);
                         const newUser = {
                             email,
                             password: hashedPassword,
@@ -58,7 +58,7 @@ usersRouter
                             newUser
                         )
                             .then(user => {
-                                console.log("user:", user)
+                                // console.log("user:", user)
                                 res
                                     .status(201)
                                     .json(
@@ -105,7 +105,7 @@ usersRouter
     .route('/:user_id')
     .all(requireAuth)
     .get((req, res, next) => {
-        console.log(req)
+        // console.log(req)
         UsersService.getById(req.app.get('db'), req.user.id)
         .then(user => {
             res.json(UsersService.serializeUser(user))
