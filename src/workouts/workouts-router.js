@@ -46,7 +46,7 @@ workoutsRouter
         console.log('req.user::', req.user);
         let user_id = req.user.id
 
-        // console.log('req.body', req.body);
+        console.log('req.body', req.body);
 
         let responseWorkout
         let responseWorkoutDetails = []
@@ -73,7 +73,7 @@ workoutsRouter
         //Get all exercises and filter out the ones that we won't need, based on what the user chose
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
-                // console.log('exercises::', exercises);
+                console.log('exercises::', exercises);
                 // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
@@ -81,38 +81,38 @@ workoutsRouter
                     // if ((is_advanced == "") && (exercises[i].is_advanced == 1)) {
                     //     exercises[i].splice
                     // }
-                    if ((is_advanced === true) && (exercises[i].is_advanced === 1) && (exercises[i].is_arms === 1)) {
+                    if ((is_advanced == true) && (exercises[i].is_advanced == 1) && (exercises[i].is_arms == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_advanced === true) && (exercises[i].is_advanced === 1) && (exercises[i].is_legs === 1)) {
+                    else if ((is_advanced == true) && (exercises[i].is_advanced == 1) && (exercises[i].is_legs == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    // else if ((is_advanced === true) && (exercises[i].is_advanced === 1)) {
+                    // else if ((is_advanced == true) && (exercises[i].is_advanced == 1)) {
                     //     selectedExercises.push(exercises[i])
                     // }
-                    else if ((is_arms === true) && (exercises[i].is_arms === 1)) {
+                    else if ((is_arms == true) && (exercises[i].is_arms == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_back === true) && (exercises[i].is_back === 1)) {
+                    else if ((is_back == true) && (exercises[i].is_back == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_cardio === true) && (exercises[i].is_cardio === 1)) {
+                    else if ((is_cardio == true) && (exercises[i].is_cardio == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_chest === true) && (exercises[i].is_chest === 1)) {
+                    else if ((is_chest == true) && (exercises[i].is_chest == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_core === true) && (exercises[i].is_core === 1)) {
+                    else if ((is_core == true) && (exercises[i].is_core == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_legs === true) && (exercises[i].is_legs === 1)) {
+                    else if ((is_legs == true) && (exercises[i].is_legs == 1)) {
                         selectedExercises.push(exercises[i])
                     }
                 }
 
                 //Create randomization logic - shuffle exercises from above
                 function shuffle(array) {
-                    // console.log('array::', array);
+                    console.log('array::', array);
                     let currentIndex = array.length, temporaryValue, randomIndex;
                   
                     // While there remain elements to shuffle...
@@ -140,11 +140,11 @@ workoutsRouter
                 console.log('selectedExercises length::', selectedExercises.length)
 
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
-                if((total_length == 5) && (workout_type == "EMOM")) {
+                if((total_length == "5") && (workout_type == "EMOM")) {
                     outputExercises.push(shuffledSelectedExercises[0])
                 }
 
-                if((total_length == 5) && (workout_type == "AMRAP")) {
+                if((total_length == "5") && (workout_type == "AMRAP")) {
                     //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
@@ -157,7 +157,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == 10) && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "10") && (workout_type == "AMRAP" || "EMOM")) {
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -168,7 +168,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == 15) && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "15") && (workout_type == "AMRAP" || "EMOM")) {
                     if (numberExercisesAvailable < 3) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -179,7 +179,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == 20) && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "20") && (workout_type == "AMRAP" || "EMOM")) {
                     if (numberExercisesAvailable < 4) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -190,7 +190,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == 25) && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "25") && (workout_type == "AMRAP" || "EMOM")) {
                     if (numberExercisesAvailable < 5) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -201,7 +201,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == 30) && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "30") && (workout_type == "AMRAP" || "EMOM")) {
                     if (numberExercisesAvailable < 6) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -232,40 +232,40 @@ workoutsRouter
                     Promise.all(outputExercises.map(outputExercise => {
                         console.log('total_length type::', typeof total_length)
                     let exercise_reps = 1
-                    if ((workout_type == "EMOM") && (total_length == 5)) {
+                    if ((workout_type == "EMOM") && (total_length == "5")) {
                         exercise_reps = getRandomArbitrary(5, 10)
                     }
-                    else if ((workout_type == "AMRAP") && (total_length == 5)) {
+                    else if ((workout_type == "AMRAP") && (total_length == "5")) {
                         exercise_reps = getRandomArbitrary(5, 10)
                     }
-                    else if ((workout_type == "EMOM") && (total_length == 10)) {
+                    else if ((workout_type == "EMOM") && (total_length == "10")) {
                         exercise_reps = getRandomArbitrary(5, 10)
                     }
-                    else if ((workout_type == "AMRAP") && (total_length == 10)) {
+                    else if ((workout_type == "AMRAP") && (total_length == "10")) {
                         exercise_reps = getRandomArbitrary(5, 20)
                     }
-                    else if ((workout_type == "EMOM") && (total_length == 15)) {
+                    else if ((workout_type == "EMOM") && (total_length == "15")) {
                         exercise_reps = getRandomArbitrary(5, 10)
                     }
-                    else if ((workout_type == "AMRAP") && (total_length == 15)) {
+                    else if ((workout_type == "AMRAP") && (total_length == "15")) {
                         exercise_reps = getRandomArbitrary(10, 25)
                     }
-                    else if ((workout_type == "EMOM") && (total_length == 20)) {
+                    else if ((workout_type == "EMOM") && (total_length == "20")) {
                         exercise_reps = getRandomArbitrary(5, 15)
                     }
-                    else if ((workout_type == "AMRAP") && (total_length == 20)) {
+                    else if ((workout_type == "AMRAP") && (total_length == "20")) {
                         exercise_reps = getRandomArbitrary(5, 20)
                     }
-                    else if ((workout_type == "EMOM") && (total_length == 25)) {
+                    else if ((workout_type == "EMOM") && (total_length == "25")) {
                         exercise_reps = getRandomArbitrary(5, 15)
                     }
-                    else if ((workout_type == "AMRAP") && (total_length == 25)) {
+                    else if ((workout_type == "AMRAP") && (total_length == "25")) {
                         exercise_reps = getRandomArbitrary(10, 25)
                     }
-                    else if ((workout_type == "EMOM") && (total_length == 30)) {
+                    else if ((workout_type == "EMOM") && (total_length == "30")) {
                         exercise_reps = getRandomArbitrary(5, 15)
                     }
-                    else if ((workout_type == "AMRAP") && (total_length == 30)) {
+                    else if ((workout_type == "AMRAP") && (total_length == "30")) {
                         exercise_reps = getRandomArbitrary(10, 30)
                     }
                         console.log('exercise reps::', exercise_reps)
@@ -297,134 +297,73 @@ workoutsRouter
     })
 
 //Workouts by ID
-// workoutsRouter
-//     .route('/:workout_id')
-//     .all((req, res, next) => {
-//         if (isNaN(parseInt(req.params.workout_id))) {
-//             return res.status(404).json({
-//                 error: { message: `Invalid id` }
-//             })
-//         }
-//         WorkoutsService.getWorkoutById(
-//             req.app.get('db'),
-//             req.params.workout_id
-//         )
-//             .then(workout => {
-//                 if (!workout) {
-//                     return res.status(404).json({
-//                         error: { message: `Workout doesn't exist` }
-//                     })
-//                 }
-//                 res.workout = workout
-//                 next()
-//             })
-//             .catch(next)
-//     })
-//     .get((req, res, next) => {
-//         res.json(serializeWorkout(res.workout))
-//     })
-//     .delete((req, res, next) => {
-//         WorkoutsService.deleteWorkout(
-//             req.app.get('db'),
-//             req.params.workout_id
-//         )
-//             .then(numRowsAffected => {
-//                 res.status(204).end()
-//             })
-//             .catch(next)
-//     })
-//     .patch(jsonParser, (req, res, next) => {
-//         const { workouts_name, total_length } = req.body
-//         const workoutToUpdate = { workouts_name, total_length }
+workoutsRouter
+    .route('/:workout_id')
+    .all(requireAuth, (req, res, next) => {
+        if (isNaN(parseInt(req.params.workout_id))) {
+            return res.status(404).json({
+                error: { message: `Invalid ID` }
+            })
+        }
+        WorkoutsService.getWorkoutById(
+            req.app.get('db'),
+            req.params.workout_id
+        )
+            .then(workout => {
+                if (!workout) {
+                    return res.status(404).json({
+                        error: { message: `Workout doesn't exist` }
+                    })
+                }
+                res.workout = workout
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.json(serializeWorkout(res.workout))
+    })
+    .delete(requireAuth, jsonParser, (req, res, next) => {
+        console.log('req.params::', req.params);
+        WorkoutsService.deleteWorkout(
+            req.app.get('db'),
+            req.params.workout_id
+        )
+            .then(numRowsAffected => {
+                res.status(204).end()
+            })
+            .catch(next)
+    })
+    .patch(jsonParser, (req, res, next) => {
+        const { workouts_name, total_length } = req.body
+        const workoutToUpdate = { workouts_name, total_length }
 
-//         const numberOfValues = Object.values(workoutToUpdate).filter(Boolean).length
-//         if (numberOfValues === 0)
-//             return res.status(400).json({
-//                 error: {
-//                     message: `Request body must content either 'workouts_name' or 'total_length'`
-//                 }
-//             })
+        const numberOfValues = Object.values(workoutToUpdate).filter(Boolean).length
+        if (numberOfValues === 0)
+            return res.status(400).json({
+                error: {
+                    message: `Request body must content either 'workouts_name' or 'total_length'`
+                }
+            })
 
-//         WorkoutsService.updateWorkout(
-//             req.app.get('db'),
-//             req.params.workout_id,
-//             workoutToUpdate
-//         )
-//             .then(updatedWorkout => {
-//                 res.status(200).json(serializeWorkout(updatedWorkout[0]))
-//             })
-//             .catch(next)
-//     })
+        WorkoutsService.updateWorkout(
+            req.app.get('db'),
+            req.params.workout_id,
+            workoutToUpdate
+        )
+            .then(updatedWorkout => {
+                res.status(200).json(serializeWorkout(updatedWorkout[0]))
+            })
+            .catch(next)
+    })
 
 //Workouts by user id aka get only the workouts for the logged in user
 workoutsRouter
-    //.route('/user/:user_id')
     .route('/user/loggedin')
-    // .all((req, res, next) => {
-    //     if (isNaN(parseInt(req.params.user_id))) {
-    //         return res.status(404).json({
-    //             error: { message: `Invalid id` }
-    //         })
-    //     }
-    //     WorkoutsService.getWorkoutByUserId(
-    //         req.app.get('db'),
-    //         req.user.id
-    //     )
-    //         .then(workout => {
-    //             if (!workout) {
-    //                 return res.status(404).json({
-    //                     error: { message: `Workout doesn't exist` }
-    //                 })
-    //             }
-    //             res.workout = workout
-    //             next()
-    //         })
-    //         .catch(next)
-    // })
-    // .get((req, res, next) => {
-    //     res.json(res.workout)
-    // })
-    // .delete((req, res, next) => {
-    //     WorkoutsService.deleteWorkout(
-    //         req.app.get('db'),
-    //         req.params.user_id
-    //     )
-    //         .then(numRowsAffected => {
-    //             res.status(204).end()
-    //         })
-    //         .catch(next)
-    // })
-
-    // .all((req, res, next) => {
-    //         if (isNaN(parseInt(req.user.id))) {
-    //             return res.status(404).json({
-    //                 error: { message: `Invalid id` }
-    //             })
-    //         }
-    //         WorkoutsService.getWorkoutByUserId(
-    //             req.app.get('db'),
-    //             req.user.id
-    //         )
-    //             .then(workout => {
-    //                 if (!workout) {
-    //                     return res.status(404).json({
-    //                         error: { message: `Workout doesn't exist` }
-    //                     })
-    //                 }
-    //                 res.workout = workout
-    //                 next()
-    //             })
-    //             .catch(next)
-    //     })
-    //     .get((req, res, next) => {
-    //         res.json(res.workout)
-    //     })
     .all(requireAuth)
     .get((req, res, next) => {
-        // console.log("user ID",req.user.id)
         WorkoutsService.getWorkoutByUserId(req.app.get('db'), req.user.id)
             .then(workouts => {
-                // console.log(workouts);
                 res.status(200)
                 res.json(WorkoutsService.serializeWorkouts(workouts))
             })
