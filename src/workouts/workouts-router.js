@@ -273,7 +273,8 @@ workoutsRouter
                         let workoutDetailsPayload = {
                             workouts_id: workout.id,
 	                        exercises_id: outputExercise.id,
-	                        exercise_reps: exercise_reps
+                            exercise_reps: exercise_reps,
+                            total_length: total_length
                         }
                         console.log('workoutDetails payload::', workoutDetailsPayload)
                         return WorkoutDetailsService.insertWorkoutDetails(
@@ -296,7 +297,7 @@ workoutsRouter
             .catch(next)
     })
 
-//Workouts by ID
+//Workouts by ID`
 workoutsRouter
     .route('/:workout_id')
     .all(requireAuth, (req, res, next) => {
