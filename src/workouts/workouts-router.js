@@ -144,31 +144,31 @@ workoutsRouter
                     outputExercises.push(shuffledSelectedExercises[0])
                 }
 
-                if((total_length == "5") && (workout_type == "AMRAP")) {
-                    //check if the maximum number of exercises available is matching the current number of exercises necessary
+                // if((total_length == "5") && (workout_type == "AMRAP")) {
+                //     //check if the maximum number of exercises available is matching the current number of exercises necessary
+                //     if (numberExercisesAvailable < 2) {
+                //         numberExercisesToSelect = numberExercisesAvailable
+                //     } else {
+                //         numberExercisesToSelect = 2
+                //     }
+                //     //add to the output exercises each one of the selected exercises which were already shuffled
+                //     for (let i = 0; i < numberExercisesToSelect; i++) {
+                //         outputExercises.push(shuffledSelectedExercises[i]) 
+                //     }
+                // }
+
+                if ((total_length == "10") && (workout_type == "EMOM")) {
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
                         numberExercisesToSelect = 2
                     }
-                    //add to the output exercises each one of the selected exercises which were already shuffled
                     for (let i = 0; i < numberExercisesToSelect; i++) {
                         outputExercises.push(shuffledSelectedExercises[i]) 
                     }
                 }
 
-                if ((total_length == "10") && (workout_type == "AMRAP" || "EMOM")) {
-                    if (numberExercisesAvailable < 2) {
-                        numberExercisesToSelect = numberExercisesAvailable
-                    } else {
-                        numberExercisesToSelect = 2
-                    }
-                    for (let i = 0; i < numberExercisesToSelect; i++) {
-                        outputExercises.push(shuffledSelectedExercises[i]) 
-                    }
-                }
-
-                if ((total_length == "15") && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "15") && (workout_type == "EMOM")) {
                     if (numberExercisesAvailable < 3) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -179,7 +179,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == "20") && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "20") && (workout_type == "EMOM")) {
                     if (numberExercisesAvailable < 4) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -190,7 +190,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == "25") && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "25") && (workout_type == "EMOM")) {
                     if (numberExercisesAvailable < 5) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -201,7 +201,7 @@ workoutsRouter
                     }
                 }
 
-                if ((total_length == "30") && (workout_type == "AMRAP" || "EMOM")) {
+                if ((total_length == "30") && (workout_type == "EMOM")) {
                     if (numberExercisesAvailable < 6) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {
@@ -226,48 +226,48 @@ workoutsRouter
                     function getRandomArbitrary(min, max) {
                         min = Math.ceil(min);
                         max = Math.floor(max);
-                        return Math.floor(Math.random() * (max - min)) + min;
+                        return Math.floor((Math.random() * (max - min)) + min) * 2;
                     }
 
                     Promise.all(outputExercises.map(outputExercise => {
                         console.log('total_length type::', typeof total_length)
                     let exercise_reps = 1
-                    if ((workout_type == "EMOM") && (total_length == "5")) {
-                        exercise_reps = getRandomArbitrary(5, 10)
+                    if ((workout_type == "EMOM") && (total_length == "5" || "10" || "15" || "20" || "25" || "30")) {
+                        exercise_reps = getRandomArbitrary(2, 12)
                     }
-                    else if ((workout_type == "AMRAP") && (total_length == "5")) {
-                        exercise_reps = getRandomArbitrary(5, 10)
-                    }
-                    else if ((workout_type == "EMOM") && (total_length == "10")) {
-                        exercise_reps = getRandomArbitrary(5, 10)
-                    }
-                    else if ((workout_type == "AMRAP") && (total_length == "10")) {
-                        exercise_reps = getRandomArbitrary(5, 20)
-                    }
-                    else if ((workout_type == "EMOM") && (total_length == "15")) {
-                        exercise_reps = getRandomArbitrary(5, 10)
-                    }
-                    else if ((workout_type == "AMRAP") && (total_length == "15")) {
-                        exercise_reps = getRandomArbitrary(10, 25)
-                    }
-                    else if ((workout_type == "EMOM") && (total_length == "20")) {
-                        exercise_reps = getRandomArbitrary(5, 15)
-                    }
-                    else if ((workout_type == "AMRAP") && (total_length == "20")) {
-                        exercise_reps = getRandomArbitrary(5, 20)
-                    }
-                    else if ((workout_type == "EMOM") && (total_length == "25")) {
-                        exercise_reps = getRandomArbitrary(5, 15)
-                    }
-                    else if ((workout_type == "AMRAP") && (total_length == "25")) {
-                        exercise_reps = getRandomArbitrary(10, 25)
-                    }
-                    else if ((workout_type == "EMOM") && (total_length == "30")) {
-                        exercise_reps = getRandomArbitrary(5, 15)
-                    }
-                    else if ((workout_type == "AMRAP") && (total_length == "30")) {
-                        exercise_reps = getRandomArbitrary(10, 30)
-                    }
+                    // else if ((workout_type == "AMRAP") && (total_length == "5")) {
+                    //     exercise_reps = getRandomArbitrary(5, 10)
+                    // }
+                    // else if ((workout_type == "EMOM") && (total_length == "10")) {
+                    //     exercise_reps = getRandomArbitrary(5, 10)
+                    // }
+                    // // else if ((workout_type == "AMRAP") && (total_length == "10")) {
+                    // //     exercise_reps = getRandomArbitrary(5, 20)
+                    // // }
+                    // else if ((workout_type == "EMOM") && (total_length == "15")) {
+                    //     exercise_reps = getRandomArbitrary(5, 10)
+                    // }
+                    // // else if ((workout_type == "AMRAP") && (total_length == "15")) {
+                    // //     exercise_reps = getRandomArbitrary(10, 25)
+                    // // }
+                    // else if ((workout_type == "EMOM") && (total_length == "20")) {
+                    //     exercise_reps = getRandomArbitrary(5, 15)
+                    // }
+                    // // else if ((workout_type == "AMRAP") && (total_length == "20")) {
+                    // //     exercise_reps = getRandomArbitrary(5, 20)
+                    // // }
+                    // else if ((workout_type == "EMOM") && (total_length == "25")) {
+                    //     exercise_reps = getRandomArbitrary(5, 15)
+                    // }
+                    // // else if ((workout_type == "AMRAP") && (total_length == "25")) {
+                    // //     exercise_reps = getRandomArbitrary(10, 25)
+                    // // }
+                    // else if ((workout_type == "EMOM") && (total_length == "30")) {
+                    //     exercise_reps = getRandomArbitrary(5, 15)
+                    // }
+                    // else if ((workout_type == "AMRAP") && (total_length == "30")) {
+                    //     exercise_reps = getRandomArbitrary(10, 30)
+                    // }
                         console.log('exercise reps::', exercise_reps)
 
                         let workoutDetailsPayload = {
