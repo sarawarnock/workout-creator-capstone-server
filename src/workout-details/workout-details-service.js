@@ -5,7 +5,7 @@ const WorkoutDetailsService = {
         .select('*')
     },
     getWorkoutDetailsAndExercises(db) {
-      return db.raw(`SELECT	workouts_id, exercises_id, exercise_reps, title, description FROM workout_details wd LEFT JOIN exercises e2 on wd.exercises_id = e2.id;`); 
+      return db.raw(`SELECT	workouts_id, exercises_id, exercise_reps, title, description, total_length FROM workout_details wd LEFT JOIN exercises e2 on wd.exercises_id = e2.id;`); 
     },
     getWorkoutDetailsById(db, workoutdetails_id) {
       return db
@@ -15,7 +15,7 @@ const WorkoutDetailsService = {
     },
     getWorkoutDetailsAndExercisesByWorkoutId(db, workout_id) {
       console.log('services getting by workout_id::', workout_id);
-      return db.raw(`SELECT	workouts_id, exercises_id, exercise_reps, title, description FROM workout_details wd LEFT JOIN exercises e2 on wd.exercises_id = e2.id WHERE wd.workouts_id = ${workout_id};`); 
+      return db.raw(`SELECT	workouts_id, exercises_id, exercise_reps, title, description, total_length FROM workout_details wd LEFT JOIN exercises e2 on wd.exercises_id = e2.id WHERE wd.workouts_id = ${workout_id};`); 
     },
     insertWorkoutDetails(db, newWorkoutDetails) {
       return db

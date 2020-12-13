@@ -73,7 +73,7 @@ workoutsRouter
         //Get all exercises and filter out the ones that we won't need, based on what the user chose
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
-                console.log('exercises::', exercises);
+                //console.log('exercises::', exercises);
                 // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
@@ -230,7 +230,7 @@ workoutsRouter
                     }
 
                     Promise.all(outputExercises.map(outputExercise => {
-                        console.log('total_length type::', typeof total_length)
+                        //console.log('total_length type::', typeof total_length)
                     let exercise_reps = 1
                     if ((workout_type == "EMOM") && (total_length == "5" || "10" || "15" || "20" || "25" || "30")) {
                         exercise_reps = getRandomArbitrary(2, 12)
@@ -273,7 +273,8 @@ workoutsRouter
                         let workoutDetailsPayload = {
                             workouts_id: workout.id,
 	                        exercises_id: outputExercise.id,
-	                        exercise_reps: exercise_reps
+                            exercise_reps: exercise_reps,
+                            total_length: total_length
                         }
                         console.log('workoutDetails payload::', workoutDetailsPayload)
                         return WorkoutDetailsService.insertWorkoutDetails(
