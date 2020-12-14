@@ -8,7 +8,7 @@ function requireAuth(req, res, next) {
     return res.status(401).json({ error: 'Missing bearer token' })
   } else {
     bearerToken = authToken.slice(7, authToken.length)
-    console.log(bearerToken)
+    // console.log(bearerToken)
   }
 
   try {
@@ -26,7 +26,7 @@ function requireAuth(req, res, next) {
         next()
       })
       .catch(err => {
-        console.error(err)
+        console.error('jwt-auth err::', err)
         next(err)
       })
   } catch(error) {

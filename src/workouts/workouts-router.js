@@ -1,4 +1,4 @@
-const path = require('path')
+// const path = require('path')
 const express = require('express')
 const xss = require('xss')
 const WorkoutsService = require('./workouts-service')
@@ -297,7 +297,7 @@ workoutsRouter
             .catch(next)
     })
 
-//Workouts by ID`
+//Workouts by ID
 workoutsRouter
     .route('/:workout_id')
     .all(requireAuth, (req, res, next) => {
