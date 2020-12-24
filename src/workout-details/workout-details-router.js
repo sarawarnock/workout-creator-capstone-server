@@ -148,21 +148,21 @@ workoutDetailsRouter
     )
       // .then(console.log('workout_id:::', req.params.workout_id))
       .then(workoutDetailsAndExercises => {
-        console.log('details::', workoutDetailsAndExercises);
+        // console.log('details::', workoutDetailsAndExercises);
         if (workoutDetailsAndExercises.rows.length == 0) {
           // console.log('workout and exercise rows:', workoutDetailsAndExercises.rows);
           return res.status(404).json({
             error: { message: `Workout details and exercises for workout id don't exist` }
           })
         }
-        console.log('workouts rows::', workoutDetailsAndExercises.rows)
+        // console.log('workouts rows::', workoutDetailsAndExercises.rows)
         res.workoutDetailsAndExercises = workoutDetailsAndExercises.rows
         next()
       })
       .catch(next)
   })
   .get((req, res, next) => {
-    console.log('get res::', res.workoutDetailsAndExercises)
+    // console.log('get res::', res.workoutDetailsAndExercises)
     res.json(res.workoutDetailsAndExercises)
   })
 

@@ -43,10 +43,10 @@ workoutsRouter
             workouts_name
         } = req.body
 
-        console.log('req.user::', req.user);
+        // console.log('req.user::', req.user);
         let user_id = req.user.id
 
-        console.log('req.body', req.body);
+        // console.log('req.body', req.body);
 
         let responseWorkout
         let responseWorkoutDetails = []
@@ -59,7 +59,7 @@ workoutsRouter
             workout_type,
             workouts_name
         }
-        console.log('newWorkout::', newWorkout);
+        // console.log('newWorkout::', newWorkout);
         const knexInstance = req.app.get('db')
 
         for (const [key, value] of Object.entries(newWorkout))
@@ -73,7 +73,7 @@ workoutsRouter
         //Get all exercises and filter out the ones that we won't need, based on what the user chose
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
-                console.log('exercises::', exercises);
+                // console.log('exercises::', exercises);
                 // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
@@ -112,7 +112,7 @@ workoutsRouter
 
                 //Create randomization logic - shuffle exercises from above
                 function shuffle(array) {
-                    console.log('array::', array);
+                    // console.log('array::', array);
                     let currentIndex = array.length, temporaryValue, randomIndex;
                   
                     // While there remain elements to shuffle...
@@ -136,8 +136,8 @@ workoutsRouter
                 let numberExercisesToSelect = 1
                 let shuffledSelectedExercises = shuffle(selectedExercises)
 
-                console.log('total_length::', total_length)
-                console.log('selectedExercises length::', selectedExercises.length)
+                // console.log('total_length::', total_length)
+                // console.log('selectedExercises length::', selectedExercises.length)
 
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
                 if((total_length == "5") && (workout_type == "EMOM")) {
@@ -230,7 +230,7 @@ workoutsRouter
                     }
 
                     Promise.all(outputExercises.map(outputExercise => {
-                        console.log('total_length type::', typeof total_length)
+                        // console.log('total_length type::', typeof total_length)
                     let exercise_reps = 1
                     if ((workout_type == "EMOM") && (total_length == "5")) {
                         exercise_reps = getRandomArbitrary(5, 10)
@@ -268,7 +268,7 @@ workoutsRouter
                     else if ((workout_type == "AMRAP") && (total_length == "30")) {
                         exercise_reps = getRandomArbitrary(10, 30)
                     }
-                        console.log('exercise reps::', exercise_reps)
+                        // console.log('exercise reps::', exercise_reps)
 
                         let workoutDetailsPayload = {
                             workouts_id: workout.id,
@@ -276,7 +276,7 @@ workoutsRouter
                             exercise_reps: exercise_reps,
                             total_length: total_length
                         }
-                        console.log('workoutDetails payload::', workoutDetailsPayload)
+                        // console.log('workoutDetails payload::', workoutDetailsPayload)
                         return WorkoutDetailsService.insertWorkoutDetails(
                             req.app.get('db'),
                             workoutDetailsPayload
@@ -325,7 +325,7 @@ workoutsRouter
         res.json(serializeWorkout(res.workout))
     })
     .delete(requireAuth, jsonParser, (req, res, next) => {
-        console.log('req.params::', req.params);
+        // console.log('req.params::', req.params);
         WorkoutsService.deleteWorkout(
             req.app.get('db'),
             req.params.workout_id
