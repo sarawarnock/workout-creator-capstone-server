@@ -1,11 +1,11 @@
-const path = require('path')
+// const path = require('path')
 const express = require('express')
 const xss = require('xss')
 const WorkoutsService = require('./workouts-service')
 const ExercisesService = require('../exercises/exercises-service')
 const WorkoutDetailsService = require('../workout-details/workout-details-service')
 const { requireAuth } = require('../middleware/jwt-auth')
-const UsersService = require('../users/users-service')
+// const UsersService = require('../users/users-service')
 
 const workoutsRouter = express.Router()
 const jsonParser = express.json()
@@ -29,7 +29,7 @@ workoutsRouter
             .catch(next)
     })
     //Post new worrkout depending on what the user checks in the client
-    .post(jsonParser, (req, res, next) => {
+    .post(jsonParser, requireAuth, (req, res, next) => {
         let {
             is_advanced,
             is_arms,
@@ -40,9 +40,13 @@ workoutsRouter
             is_legs,
             total_length,
             workout_type,
-            workouts_name,
-            user_id
+            workouts_name
         } = req.body
+
+        // console.log('req.user::', req.user);
+        let user_id = req.user.id
+
+        // console.log('req.body', req.body);
 
         let responseWorkout
         let responseWorkoutDetails = []
@@ -55,6 +59,7 @@ workoutsRouter
             workout_type,
             workouts_name
         }
+        // console.log('newWorkout::', newWorkout);
         const knexInstance = req.app.get('db')
 
         for (const [key, value] of Object.entries(newWorkout))
@@ -68,6 +73,7 @@ workoutsRouter
         //Get all exercises and filter out the ones that we won't need, based on what the user chose
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
+                // console.log('exercises::', exercises);
                 // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
@@ -75,38 +81,39 @@ workoutsRouter
                     // if ((is_advanced == "") && (exercises[i].is_advanced == 1)) {
                     //     exercises[i].splice
                     // }
-                    if ((is_advanced == "on") && (exercises[i].is_advanced == 1) && (exercises[i].is_arms == 1)) {
+                    if ((is_advanced == true) && (exercises[i].is_advanced == 1) && (exercises[i].is_arms == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_advanced == "on") && (exercises[i].is_advanced == 1) && (exercises[i].is_legs == 1)) {
+                    else if ((is_advanced == true) && (exercises[i].is_advanced == 1) && (exercises[i].is_legs == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    // else if ((is_advanced == "on") && (exercises[i].is_advanced == 1)) {
+                    // else if ((is_advanced == true) && (exercises[i].is_advanced == 1)) {
                     //     selectedExercises.push(exercises[i])
                     // }
-                    else if ((is_arms == "on") && (exercises[i].is_arms == 1)) {
+                    else if ((is_arms == true) && (exercises[i].is_arms == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_back == "on") && (exercises[i].is_back == 1)) {
+                    else if ((is_back == true) && (exercises[i].is_back == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_cardio == "on") && (exercises[i].is_cardio == 1)) {
+                    else if ((is_cardio == true) && (exercises[i].is_cardio == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_chest == "on") && (exercises[i].is_chest == 1)) {
+                    else if ((is_chest == true) && (exercises[i].is_chest == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_core == "on") && (exercises[i].is_core == 1)) {
+                    else if ((is_core == true) && (exercises[i].is_core == 1)) {
                         selectedExercises.push(exercises[i])
                     }
-                    else if ((is_legs == "on") && (exercises[i].is_legs == 1)) {
+                    else if ((is_legs == true) && (exercises[i].is_legs == 1)) {
                         selectedExercises.push(exercises[i])
                     }
                 }
 
                 //Create randomization logic - shuffle exercises from above
                 function shuffle(array) {
-                    var currentIndex = array.length, temporaryValue, randomIndex;
+                    // console.log('array::', array);
+                    let currentIndex = array.length, temporaryValue, randomIndex;
                   
                     // While there remain elements to shuffle...
                     while (0 !== currentIndex) {
@@ -128,6 +135,9 @@ workoutsRouter
                 let numberExercisesAvailable = selectedExercises.length
                 let numberExercisesToSelect = 1
                 let shuffledSelectedExercises = shuffle(selectedExercises)
+
+                // console.log('total_length::', total_length)
+                // console.log('selectedExercises length::', selectedExercises.length)
 
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
                 if((total_length == "5") && (workout_type == "EMOM")) {
@@ -205,7 +215,7 @@ workoutsRouter
             })
             //After workout POSTed return the list of exercises that were filtered, selected, and randomized
             .then(outputExercises => {
-                console.log(outputExercises)
+                // console.log(outputExercises)
                 //Insert a new workout in the 'workouts' table 
                 WorkoutsService.insertWorkout(
                     req.app.get('db'),
@@ -220,7 +230,7 @@ workoutsRouter
                     }
 
                     Promise.all(outputExercises.map(outputExercise => {
-
+                        // console.log('total_length type::', typeof total_length)
                     let exercise_reps = 1
                     if ((workout_type == "EMOM") && (total_length == "5")) {
                         exercise_reps = getRandomArbitrary(5, 10)
@@ -258,13 +268,15 @@ workoutsRouter
                     else if ((workout_type == "AMRAP") && (total_length == "30")) {
                         exercise_reps = getRandomArbitrary(10, 30)
                     }
+                        // console.log('exercise reps::', exercise_reps)
 
                         let workoutDetailsPayload = {
                             workouts_id: workout.id,
 	                        exercises_id: outputExercise.id,
-	                        exercise_reps
+                            exercise_reps: exercise_reps,
+                            total_length: total_length
                         }
-                        console.log(workoutDetailsPayload)
+                        // console.log('workoutDetails payload::', workoutDetailsPayload)
                         return WorkoutDetailsService.insertWorkoutDetails(
                             req.app.get('db'),
                             workoutDetailsPayload
@@ -288,10 +300,10 @@ workoutsRouter
 //Workouts by ID
 workoutsRouter
     .route('/:workout_id')
-    .all((req, res, next) => {
+    .all(requireAuth, (req, res, next) => {
         if (isNaN(parseInt(req.params.workout_id))) {
             return res.status(404).json({
-                error: { message: `Invalid id` }
+                error: { message: `Invalid ID` }
             })
         }
         WorkoutsService.getWorkoutById(
@@ -312,7 +324,8 @@ workoutsRouter
     .get((req, res, next) => {
         res.json(serializeWorkout(res.workout))
     })
-    .delete((req, res, next) => {
+    .delete(requireAuth, jsonParser, (req, res, next) => {
+        // console.log('req.params::', req.params);
         WorkoutsService.deleteWorkout(
             req.app.get('db'),
             req.params.workout_id
@@ -347,77 +360,15 @@ workoutsRouter
 
 //Workouts by user id aka get only the workouts for the logged in user
 workoutsRouter
-    //.route('/user/:user_id')
     .route('/user/loggedin')
-    // .all((req, res, next) => {
-    //     if (isNaN(parseInt(req.params.user_id))) {
-    //         return res.status(404).json({
-    //             error: { message: `Invalid id` }
-    //         })
-    //     }
-    //     WorkoutsService.getWorkoutByUserId(
-    //         req.app.get('db'),
-    //         req.user.id
-    //     )
-    //         .then(workout => {
-    //             if (!workout) {
-    //                 return res.status(404).json({
-    //                     error: { message: `Workout doesn't exist` }
-    //                 })
-    //             }
-    //             res.workout = workout
-    //             next()
-    //         })
-    //         .catch(next)
-    // })
-    // .get((req, res, next) => {
-    //     res.json(res.workout)
-    // })
-    // .delete((req, res, next) => {
-    //     WorkoutsService.deleteWorkout(
-    //         req.app.get('db'),
-    //         req.params.user_id
-    //     )
-    //         .then(numRowsAffected => {
-    //             res.status(204).end()
-    //         })
-    //         .catch(next)
-    // })
-
     .all(requireAuth)
-    .all((req, res, next) => {
-            if (isNaN(parseInt(req.user.id))) {
-                return res.status(404).json({
-                    error: { message: `Invalid id` }
-                })
-            }
-            WorkoutsService.getWorkoutByUserId(
-                req.app.get('db'),
-                req.user.id
-            )
-                .then(workout => {
-                    if (!workout) {
-                        return res.status(404).json({
-                            error: { message: `Workout doesn't exist` }
-                        })
-                    }
-                    res.workout = workout
-                    next()
-                })
-                .catch(next)
-        })
-        .get((req, res, next) => {
-            res.json(res.workout)
-        })
-    // .get((req, res, next) => {
-    //     console.log(req.user.id)
-    //     //UsersService.getById(req.app.get('db'), req.user.id)
-    //     WorkoutsService.getWorkoutByUserId(req.app.get('db'), req.user.id)
-    //     .then(res => {
-    //         //res.json(UsersService.serializeUser(user))
-    //         console.log(res.json(res.workout))
-    //     })
-    //     .catch(next)
-    // })
+    .get((req, res, next) => {
+        WorkoutsService.getWorkoutByUserId(req.app.get('db'), req.user.id)
+            .then(workouts => {
+                res.status(200)
+                res.json(WorkoutsService.serializeWorkouts(workouts))
+            })
+            .catch(next)
+    })
 
 module.exports = workoutsRouter

@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const xss = require('xss')
 const WorkoutDetailsService = require('./workout-details-service')
+const { requireAuth } = require('../middleware/jwt-auth')
 
 const workoutDetailsRouter = express.Router()
 const jsonParser = express.json()
@@ -134,6 +135,7 @@ workoutDetailsRouter
 //Get workout details, including exercises title and description, for a particular workout
 workoutDetailsRouter
   .route('/workout/:workout_id')
+  // .all(requireAuth)
   .all((req, res, next) => {
     if(isNaN(parseInt(req.params.workout_id))) {
       return res.status(404).json({
@@ -144,18 +146,23 @@ workoutDetailsRouter
       req.app.get('db'),
       req.params.workout_id
     )
+      // .then(console.log('workout_id:::', req.params.workout_id))
       .then(workoutDetailsAndExercises => {
+        // console.log('details::', workoutDetailsAndExercises);
         if (workoutDetailsAndExercises.rows.length == 0) {
+          // console.log('workout and exercise rows:', workoutDetailsAndExercises.rows);
           return res.status(404).json({
             error: { message: `Workout details and exercises for workout id don't exist` }
           })
         }
+        // console.log('workouts rows::', workoutDetailsAndExercises.rows)
         res.workoutDetailsAndExercises = workoutDetailsAndExercises.rows
         next()
       })
       .catch(next)
   })
   .get((req, res, next) => {
+    // console.log('get res::', res.workoutDetailsAndExercises)
     res.json(res.workoutDetailsAndExercises)
   })
 
