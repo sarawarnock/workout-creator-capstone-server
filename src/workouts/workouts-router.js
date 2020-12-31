@@ -141,7 +141,16 @@ workoutsRouter
 
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
                 if((total_length == "5") && (workout_type == "EMOM")) {
-                    outputExercises.push(shuffledSelectedExercises[0])
+                    // outputExercises.push(shuffledSelectedExercises[0])
+                    if (numberExercisesAvailable < 2) {
+                        numberExercisesToSelect = numberExercisesAvailable
+                    } else {
+                        numberExercisesToSelect = 2
+                    }
+                    //add to the output exercises each one of the selected exercises which were already shuffled
+                    for (let i = 0; i < numberExercisesToSelect; i++) {
+                        outputExercises.push(shuffledSelectedExercises[i]) 
+                    }
                 }
 
                 if((total_length == "5") && (workout_type == "AMRAP")) {
