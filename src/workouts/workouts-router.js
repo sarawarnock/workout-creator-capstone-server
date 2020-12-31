@@ -140,7 +140,7 @@ workoutsRouter
                 // console.log('selectedExercises length::', selectedExercises.length)
 
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
-                if((total_length == "5") && (workout_type == "EMOM")) {
+                if((total_length == "6") && (workout_type == "EMOM")) {
                     // outputExercises.push(shuffledSelectedExercises[0])
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
@@ -153,7 +153,7 @@ workoutsRouter
                     }
                 }
 
-                if((total_length == "5") && (workout_type == "AMRAP")) {
+                if((total_length == "6") && (workout_type == "AMRAP")) {
                     //check if the maximum number of exercises available is matching the current number of exercises necessary
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
@@ -241,10 +241,10 @@ workoutsRouter
                     Promise.all(outputExercises.map(outputExercise => {
                         // console.log('total_length type::', typeof total_length)
                     let exercise_reps = 1
-                    if ((workout_type == "EMOM") && (total_length == "5")) {
+                    if ((workout_type == "EMOM") && (total_length == "6")) {
                         exercise_reps = getRandomArbitrary(5, 10)
                     }
-                    else if ((workout_type == "AMRAP") && (total_length == "5")) {
+                    else if ((workout_type == "AMRAP") && (total_length == "6")) {
                         exercise_reps = getRandomArbitrary(5, 10)
                     }
                     else if ((workout_type == "EMOM") && (total_length == "10")) {
