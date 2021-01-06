@@ -24,7 +24,7 @@ app.use(morgan(morganOption, {
 
 app.use(cors())
 const corsOptions = {
-  origin: 'https://workout-creator-server.herokuapp.com/api',
+  origin: 'https://workout-creator-capstone-client.vercel.app/',
   optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
@@ -46,5 +46,3 @@ app.use('/api/workoutdetails', workoutDetailsRouter)
 app.use(errorHandler)
 
 module.exports = app
-
-// test
