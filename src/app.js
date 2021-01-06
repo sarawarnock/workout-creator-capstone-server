@@ -22,12 +22,18 @@ app.use(morgan(morganOption, {
   skip: () => NODE_ENV === 'test',
 }))
 
-const corsOptions = {
-  origin: CLIENT_ORIGIN,
-  optionsSuccessStatus: 200
-}
-app.use(cors(corsOptions));
-app.options('*', cors());
+// const corsOptions = {
+//   origin: CLIENT_ORIGIN,
+//   optionsSuccessStatus: 200
+// }
+// app.use(cors(corsOptions));
+// app.options('*', cors());
+
+app.use(
+  cors({
+      origin: CLIENT_ORIGIN
+  })
+)
 
 app.use(helmet())
 
