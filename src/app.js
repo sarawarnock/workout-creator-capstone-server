@@ -10,6 +10,7 @@ const exercisesRouter = require('./exercises/exercises-router')
 const usersRouter = require('./users/users-router')
 const workoutsRouter = require('./workouts/workouts-router')
 const workoutDetailsRouter = require('./workout-details/workout-details-router')
+const { CLIENT_ORIGIN } = require('./config');
 
 const app = express()
 

@@ -6,4 +6,5 @@ module.exports = {
   TEST_DATABASE_URL: process.env.TEST_DATABASE_URL || 'postgresql://postgres@localhost/workout-creator-capstone-server-test',
   JWT_SECRET: process.env.JWT_SECRET || 'abc234',
   JWT_EXPIRY: process.env.JWT_EXPIRY || '3h',
+  CLIENT_ORIGIN: 'https://workout-creator-capstone-client.vercel.app' || 'https://vercel.com/sarawarnock/workout-creator-capstone-client/q70n8e1vz' || 'https://workout-creator-capstone-client.sarawarnock.vercel.app' || 'https://workout-creator-capstone-client-q70n8e1vz.vercel.app'
 }
