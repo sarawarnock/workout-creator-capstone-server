@@ -22,18 +22,26 @@ app.use(morgan(morganOption, {
   skip: () => NODE_ENV === 'test',
 }))
 
-// const corsOptions = {
-//   origin: CLIENT_ORIGIN,
-//   optionsSuccessStatus: 200
-// }
-// app.use(cors(corsOptions));
-// app.options('*', cors());
+const corsOptions = {
+  origin: CLIENT_ORIGIN,
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions));
+app.options('*', cors());
 
-app.use(
-  cors({
-      origin: CLIENT_ORIGIN
-  })
-)
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*');
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json');
+  next();
+});
+
+// app.use(
+//   cors({
+//       origin: CLIENT_ORIGIN
+//   })
+// )
 
 app.use(helmet())
 
