@@ -24,7 +24,7 @@ app.use(morgan(morganOption, {
 
 app.use(cors())
 const corsOptions = {
-  origin: 'https://workout-creator-capstone-client.vercel.app/',
+  origin: CLIENT_ORIGIN,
   optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
