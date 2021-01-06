@@ -21,16 +21,14 @@ const morganOption = (NODE_ENV === 'production')
 app.use(morgan(morganOption, {
   skip: () => NODE_ENV === 'test',
 }))
-app.use(
-  cors({
-      origin: CLIENT_ORIGIN
-  })
-)
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
-});
+app.use(cors())
+const corsOptions = {
+  origin: 'https://workout-creator-server.herokuapp.com/api',
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions));
+app.options('*', cors());
 
 app.use(helmet())
 
