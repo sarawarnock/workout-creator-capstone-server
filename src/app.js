@@ -22,7 +22,6 @@ app.use(morgan(morganOption, {
   skip: () => NODE_ENV === 'test',
 }))
 
-app.use(cors())
 const corsOptions = {
   origin: CLIENT_ORIGIN,
   optionsSuccessStatus: 200
