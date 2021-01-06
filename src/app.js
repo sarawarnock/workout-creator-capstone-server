@@ -23,7 +23,7 @@ app.use(morgan(morganOption, {
 }))
 
 const corsOptions = {
-  origin: CLIENT_ORIGIN,
+  origin: 'https://workout-creator-server.herokuapp.com/api',
   optionsSuccessStatus: 200
 }
 app.use(cors(corsOptions));
