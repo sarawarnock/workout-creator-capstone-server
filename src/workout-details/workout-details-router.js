@@ -34,9 +34,6 @@ workoutDetailsRouter
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         })
-
-    //newWorkoutDetails.workouts_name = name;  
-
     WorkoutDetailsService.insertWorkoutDetails(
       req.app.get('db'),
       newWorkoutDetails

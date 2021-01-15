@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs')
 
 const UsersService = {
   serializeUser(user) {
-    // console.log(user)
     return {
       id: user.id,
       email: xss(user.email),

@@ -43,10 +43,7 @@ workoutsRouter
             workouts_name
         } = req.body
 
-        // console.log('req.user::', req.user);
         let user_id = req.user.id
-
-        // console.log('req.body', req.body);
 
         let responseWorkout
         let responseWorkoutDetails = []
@@ -59,7 +56,6 @@ workoutsRouter
             workout_type,
             workouts_name
         }
-        // console.log('newWorkout::', newWorkout);
         const knexInstance = req.app.get('db')
 
         for (const [key, value] of Object.entries(newWorkout))
@@ -73,8 +69,6 @@ workoutsRouter
         //Get all exercises and filter out the ones that we won't need, based on what the user chose
         ExercisesService.getExercises(knexInstance)
             .then(exercises => {
-                // console.log('exercises::', exercises);
-                // res.json(exercises.map(serializeExercise))
                 let selectedExercises = []
                 //if category is selected by user AND ==0 then .splice()
                 for (let i=0; i<exercises.length; i++) {
@@ -216,7 +210,6 @@ workoutsRouter
             })
             //After workout POSTed return the list of exercises that were filtered, selected, and randomized
             .then(outputExercises => {
-                // console.log(outputExercises)
                 //Insert a new workout in the 'workouts' table 
                 WorkoutsService.insertWorkout(
                     req.app.get('db'),
@@ -231,7 +224,6 @@ workoutsRouter
                     }
 
                     Promise.all(outputExercises.map(outputExercise => {
-                        // console.log('total_length type::', typeof total_length)
                     let exercise_reps = 1
                     if ((workout_type == "EMOM") && (total_length == "6")) {
                         exercise_reps = getRandomArbitrary(5, 10)
@@ -269,8 +261,6 @@ workoutsRouter
                     else if ((workout_type == "AMRAP") && (total_length == "30")) {
                         exercise_reps = getRandomArbitrary(10, 30)
                     }
-                        // console.log('exercise reps::', exercise_reps)
-
                         let workoutDetailsPayload = {
                             workouts_id: workout.id,
 	                        exercises_id: outputExercise.id,

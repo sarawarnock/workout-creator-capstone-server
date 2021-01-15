@@ -47,11 +47,9 @@ const WorkoutsService = {
         .returning('*')
     },
     serializeWorkouts(workouts) {
-      // console.log('serializeWorkouts::', workouts);
       return workouts.map(this.serializeWorkout)
     },
     serializeWorkout(workout) {
-      // console.log('serializeEach::', workout);
       const workoutTree = new Treeize();
       const workoutData = workoutTree.grow([workout]).getData()[0];
       const serializedWorkout = {
@@ -61,7 +59,6 @@ const WorkoutsService = {
           total_length: workoutData.total_length,
           workout_type: xss(workoutData.workout_type)
       }
-      // console.log('workout serialized::', serializedWorkout);
       return serializedWorkout
     }
   }
