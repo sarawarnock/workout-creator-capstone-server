@@ -37,12 +37,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-// app.use(
-//   cors({
-//       origin: CLIENT_ORIGIN
-//   })
-// )
-
 app.use(helmet())
 
 app.use(express.static('public'))

@@ -112,22 +112,18 @@ workoutsRouter
 
                 //Create randomization logic - shuffle exercises from above
                 function shuffle(array) {
-                    // console.log('array::', array);
                     let currentIndex = array.length, temporaryValue, randomIndex;
                   
                     // While there remain elements to shuffle...
                     while (0 !== currentIndex) {
-                  
                       // Pick a remaining element...
                       randomIndex = Math.floor(Math.random() * currentIndex);
                       currentIndex -= 1;
-                  
                       // And swap it with the current element.
                       temporaryValue = array[currentIndex];
                       array[currentIndex] = array[randomIndex];
                       array[randomIndex] = temporaryValue;
                     }
-                  
                     return array;
                 }
 
@@ -136,12 +132,8 @@ workoutsRouter
                 let numberExercisesToSelect = 1
                 let shuffledSelectedExercises = shuffle(selectedExercises)
 
-                // console.log('total_length::', total_length)
-                // console.log('selectedExercises length::', selectedExercises.length)
-
                 //create our outputExercises array by pushing exercises onto it, depending on the time constraint
                 if((total_length == "6") && (workout_type == "EMOM")) {
-                    // outputExercises.push(shuffledSelectedExercises[0])
                     if (numberExercisesAvailable < 2) {
                         numberExercisesToSelect = numberExercisesAvailable
                     } else {

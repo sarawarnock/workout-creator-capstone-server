@@ -11,7 +11,6 @@ const ExercisesService = {
         .where('exercises.id', exercises_id)
         .first()
     },
-    //do I need an insert here? No one is going to be inserting exercises except for me
     insertExercise(db, newExercise) {
       return db
         .insert(newExercise)

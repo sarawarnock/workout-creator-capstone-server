@@ -1,4 +1,4 @@
-# Workout Creator Capstone Client
+# Workout Creator Capstone Server
 
 This app creates workouts based on user selected muscle group, time domain and workout type. 
 
@@ -97,6 +97,10 @@ Create Workout Page
 ![Create Workout Page](/github-images/screenshots/create-workout.png) 
 Past Workouts Page
 ![Past Workouts Page](/github-images/screenshots/past-workouts.png) 
+View Invdividual Workout
+![Indvidual Workouts Page](/github-images/screenshots/indi-workout.png)
+Start Workout
+![Start Workout Page](/github-images/screenshots/start-workout.png)
 
 
 ## Functionality
